@@ -1,0 +1,7 @@
+RewriteEngine On
+RewriteBase /cnpm-final/
+
+# Chuyển tất cả các yêu cầu URL không có "index.php" vào đúng Controller
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([a-zA-Z0-9_-]+)/([a-zA-Z0-9_-]+)$ index.php?url=$1/$2 [QSA,L]
