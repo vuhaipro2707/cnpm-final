@@ -1,7 +1,7 @@
 <?php
 
     class App {
-        protected $controller = 'ExceptionController';  // Controller mặc định
+        protected $controller = 'HomeController';  // Controller mặc định
         protected $method = 'index';              // Method mặc định
         protected $params = [];                   // Params mặc định
 
