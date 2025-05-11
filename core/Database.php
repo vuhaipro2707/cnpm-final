@@ -48,7 +48,7 @@ class Database {
     // Get all results
     public function resultSet() {
         $this->execute();
-        return $this->stmt->fetchAll();
+        return $this->stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     // Get single row

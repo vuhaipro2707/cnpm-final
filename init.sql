@@ -6,7 +6,7 @@ USE coffee_shop;
 CREATE TABLE Account (
     username VARCHAR(50) PRIMARY KEY,
     password VARCHAR(100),
-    role ENUM('staff', 'manager', 'admin')
+    role ENUM('staff', 'manager', 'admin', 'customer')
 );
 
 -- Staff
@@ -29,7 +29,9 @@ CREATE TABLE Customer (
     customerId INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100),
     phone VARCHAR(20),
-    points INT
+    points INT,
+    username VARCHAR(50),
+    FOREIGN KEY (username) REFERENCES Account(username)
 );
 
 -- Item
@@ -94,14 +96,18 @@ CREATE TABLE Payment (
 
 
 INSERT INTO Account (username, password, role) VALUES
-('johnstaff', 'hashed_pwd1', 'staff'),
-('manager01', 'hashed_pwd2', 'manager'),
-('admin99', 'hashed_pwd3', 'admin'),
-('lucystaff', 'hashed_pwd4', 'staff'),
-('bobmanager', 'hashed_pwd5', 'manager');
+('staff', '1', 'staff'),
+('manager01', '1', 'manager'),
+('admin99', '1', 'admin'),
+('lucystaff', '1', 'staff'),
+('bobmanager', '1', 'manager'),
+('customer', '1', 'customer'),
+('customerbob', '1', 'customer'),
+('customercharlie', '1', 'customer'),
+('customerdiana', '1', 'customer');
 
 INSERT INTO Staff (name, position, username) VALUES
-('John Doe', 'Barista', 'johnstaff'),
+('John Doe', 'Barista', 'staff'),
 ('Lucy Smith', 'Cashier', 'lucystaff'),
 ('Bob Manager', 'Manager', 'bobmanager'),
 ('Anna Waiter', 'Waiter', 'manager01');
@@ -112,11 +118,11 @@ INSERT INTO Manager (staffId) VALUES
 (4);
 
 
-INSERT INTO Customer (name, phone, points) VALUES
-('Alice', '1234567890', 10),
-('Bob', '0987654321', 25),
-('Charlie', '1112223333', 5),
-('Diana', '2223334444', 50);
+INSERT INTO Customer (name, phone, points, username) VALUES
+('Alice', '1234567890', 10, 'customer'),
+('Bob', '0987654321', 25, 'customerbob'),
+('Charlie', '1112223333', 5, 'customercharlie'),
+('Diana', '2223334444', 50, 'customerdiana');
 
 INSERT INTO Item (name, image, note, price) VALUES
 ('Espresso', 'espresso.jpg', 'Strong and bold', 30000),

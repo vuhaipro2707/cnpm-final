@@ -9,10 +9,10 @@
 
         public function deleteItem() {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-                $id = $_POST['id'];
+                $itemId = $_POST['itemId'];
                 $quantity = $_POST['quantity'];
 
-                $this->model('Inventory')->deleteItem($id, $quantity);
+                $this->model('Inventory')->deleteItem($itemId, $quantity);
 
                 // Redirect về danh sách
                 header('Location: /cnpm-final/InventoryController/displayAllItem');

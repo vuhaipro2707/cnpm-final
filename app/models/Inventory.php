@@ -8,26 +8,26 @@ class Inventory {
     }
 
     public function getAllItems() {
-        $this->db->query("SELECT * FROM inventory");
+        $this->db->query("SELECT item.itemId, item.name, item.price, inventory.quantity FROM inventory LEFT JOIN item ON inventory.itemId = item.itemId");
         return $this->db->resultSet();
     }
 
-    public function getItemById($id) {
-        $this->db->query("SELECT * FROM inventory WHERE id = :id");
-        $this->db->bind(':id', $id);
+    public function getItemById($itemId) {
+        $this->db->query("SELECT * FROM inventory WHERE itemId = :itemId");
+        $this->db->bind(':itemId', $itemId);
         return $this->db->single();
     }
 
-    public function deleteItem($id, $quantity) {
+    public function deleteItem($itemId, $quantity) {
         // Giảm số lượng sản phẩm
-        $this->db->query("UPDATE inventory SET quantity = quantity - :qty WHERE id = :id AND quantity >= :qty");
-        $this->db->bind(':id', $id);
+        $this->db->query("UPDATE inventory SET quantity = quantity - :qty WHERE itemId = :itemId AND quantity >= :qty");
+        $this->db->bind(':itemId', $itemId);
         $this->db->bind(':qty', $quantity);
         $this->db->execute();
 
         // Nếu sau khi trừ số lượng <= 0 thì xóa luôn
-        $this->db->query("DELETE FROM inventory WHERE id = :id AND quantity <= 0");
-        $this->db->bind(':id', $id);
+        $this->db->query("DELETE FROM inventory WHERE itemId = :itemId AND quantity <= 0");
+        $this->db->bind(':itemId', $itemId);
         $this->db->execute();
     }
 
