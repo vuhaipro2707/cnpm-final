@@ -40,7 +40,8 @@ CREATE TABLE Item (
     name VARCHAR(100),
     image VARCHAR(255),
     note TEXT,
-    price INT
+    price INT,
+    type VARCHAR(100)
 );
 
 -- Inventory
@@ -56,9 +57,7 @@ CREATE TABLE `Order` (
     status ENUM('success', 'failed', 'pending') default 'pending',
     date DATE,
     tableNumber VARCHAR(10),
-    staffId INT,
     customerId INT,
-    FOREIGN KEY (staffId) REFERENCES Staff(staffId),
     FOREIGN KEY (customerId) REFERENCES Customer(customerId)
 );
 
@@ -124,25 +123,59 @@ INSERT INTO Customer (name, phone, points, username) VALUES
 ('Charlie', '1112223333', 5, 'customercharlie'),
 ('Diana', '2223334444', 50, 'customerdiana');
 
-INSERT INTO Item (name, image, note, price) VALUES
-('Espresso', 'espresso.jpg', 'Strong and bold', 30000),
-('Latte', 'latte.jpg', 'Milk and coffee', 35000),
-('Cappuccino', 'cappuccino.jpg', 'With foam', 35000),
-('Mocha', 'mocha.jpg', 'Chocolate blend', 40000),
-('Croissant', 'croissant.jpg', 'Freshly baked', 25000);
+INSERT INTO Item (name, image, note, price, type) VALUES
+('Espresso', 'espresso.jpg', 'Strong and bold', 30000, 'Đồ uống'),
+('Latte', 'latte.jpg', 'Milk and coffee', 35000, 'Đồ uống'),
+('Cappuccino', 'cappuccino.jpg', 'With foam', 35000, 'Đồ uống'),
+('Mocha', 'mocha.jpg', 'Chocolate blend', 40000, 'Đồ uống'),
+('Americano', 'americano.jpg', 'Light and smooth', 30000, 'Đồ uống'),
+('Macchiato', 'macchiato.jpg', 'Espresso with milk foam', 38000, 'Đồ uống'),
+('Matcha Latte', 'matcha_latte.jpg', 'Green tea blend', 40000, 'Đồ uống'),
+('Trà đào', 'tradao.jpg', 'Đào ngâm tươi', 32000, 'Đồ uống'),
+('Sinh tố bơ', 'sinhtobo.jpg', 'Béo ngậy, mát lạnh', 35000, 'Đồ uống'),
+('Nước chanh', 'nuocchanh.jpg', 'Giải khát tốt', 25000, 'Đồ uống'),
+
+('Croissant', 'croissant.jpg', 'Freshly baked', 25000, 'Bánh ngọt'),
+('Donut', 'donut.jpg', 'Sweet and soft', 20000, 'Bánh ngọt'),
+('Muffin', 'muffin.jpg', 'Chocolate chips', 22000, 'Bánh ngọt'),
+('Tiramisu', 'tiramisu.jpg', 'Coffee-flavored cake', 45000, 'Bánh ngọt'),
+('Cheesecake', 'cheesecake.jpg', 'Creamy and smooth', 50000, 'Bánh ngọt'),
+
+('Khoai tây chiên', 'khoaitay.jpg', 'Giòn rụm', 28000, 'Đồ ăn vặt'),
+('Bánh tráng trộn', 'banhtrangtron.jpg', 'Đặc sản Sài Gòn', 25000, 'Đồ ăn vặt'),
+('Nem chua rán', 'nemchua.jpg', 'Chiên giòn, chấm tương ớt', 30000, 'Đồ ăn vặt'),
+('Phô mai que', 'phomaique.jpg', 'Kéo sợi hấp dẫn', 27000, 'Đồ ăn vặt'),
+('Xúc xích chiên', 'xucxich.jpg', 'Nóng hổi', 30000, 'Đồ ăn vặt');
+
 
 INSERT INTO Inventory (itemId, quantity) VALUES
-(1, 100),
-(2, 80),
-(3, 60),
-(4, 50),
-(5, 40);
+(1, 100),  -- Espresso
+(2, 80),   -- Latte
+(3, 60),   -- Cappuccino
+(4, 50),   -- Mocha
+(5, 40),   -- Croissant
+(6, 120),  -- Donut
+(7, 150),  -- Muffin
+(8, 110),  -- Tiramisu
+(9, 130),  -- Cheesecake
+(10, 90),  -- Khoai tây chiên
+(11, 140), -- Bánh tráng trộn
+(12, 100), -- Nem chua rán
+(13, 95),  -- Phô mai que
+(14, 120), -- Xúc xích chiên
+(15, 85),  -- Trà đào
+(16, 110), -- Sinh tố bơ
+(17, 100), -- Matcha Latte
+(18, 130), -- Americano
+(19, 75),  -- Macchiato
+(20, 160); -- Nước chanh
 
-INSERT INTO `Order` (status, date, tableNumber, staffId, customerId) VALUES
-('pending', '2025-05-10', 'T1', 1, 1),
-('pending', '2025-05-10', 'T2', 2, 2),
-('pending', '2025-05-09', 'T3', 3, 3),
-('pending', '2025-05-08', 'T1', 1, 4);
+
+INSERT INTO `Order` (status, date, tableNumber, customerId) VALUES
+('pending', '2025-05-10', 'T1', 1),
+('pending', '2025-05-10', 'T2', 2),
+('pending', '2025-05-09', 'T3', 3),
+('pending', '2025-05-08', 'T1', 4);
 
 INSERT INTO OrderIncludeItem (orderId, itemId, quantity) VALUES
 (1, 1, 2),

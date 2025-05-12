@@ -6,6 +6,30 @@
             $this->db = new Database();
         }
 
+        public function createOrder($tableNumber, $customerId, $status, $date, $cartData) {
+            $this->db->query("INSERT INTO `order` (tableNumber, customerId, status, date) VALUES (:tableNumber, :customerId, :status, :date)");
+            $this->db->bind(':tableNumber', $tableNumber);
+            $this->db->bind(':customerId', $customerId);
+            $this->db->bind(':status', $status);
+            $this->db->bind(':date', $date);
+            $this->db->execute();
+
+            // 2. Lấy ID đơn hàng vừa tạo
+            $orderId = $this->db->lastInsertId();
+
+            // 3. Thêm từng món vào bảng orderincludeitem
+            foreach ($cartData as $item) {
+                $this->db->query("INSERT INTO orderincludeitem (orderId, itemId, quantity) VALUES (:orderId, :itemId, :quantity)");
+                $this->db->bind(':orderId', $orderId);
+                $this->db->bind(':itemId', $item['itemId']);
+                $this->db->bind(':quantity', $item['quantity']);
+                $this->db->execute();
+            }
+
+            return $orderId;
+        }
+
+
         public function getAllOrders() {
             $this->db->query("
             SELECT * 

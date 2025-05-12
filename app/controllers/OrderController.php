@@ -27,6 +27,40 @@
             $this->view('staff/confirm_order', ['orders'=> $orders, 'error'=> $error]);
         }
 
+        public function createOrder() {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Kiểm tra giỏ hàng trong session readyOrder
+                if (
+                    !isset($_SESSION['readyOrder']) ||
+                    !isset($_SESSION['readyOrder']['cart']) ||
+                    empty($_SESSION['readyOrder']['cart']) ||
+                    !isset($_SESSION['readyOrder']['tableNumber'])
+                ) {
+                    // Giỏ hàng rỗng
+                    header('Location: /cnpm-final/InventoryController/customerMenuPage/error');
+                    exit;
+                }
+
+                $cartData = $_SESSION['readyOrder']['cart'];
+
+                $orderModel = $this->model('Order');
+                $customerModel = $this->model('Customer');
+
+                // Lấy thông tin đơn hàng
+                $customerId = $customerModel->getCustomerIdByUserName($_SESSION['username'])['customerId'];
+                $tableNumber = $_SESSION['readyOrder']['tableNumber'];
+                $date = date('Y-m-d H:i:s');
+                $status = 'pending';
+                // Tạo đơn hàng
+                $orderId = $orderModel->createOrder($tableNumber, $customerId, $status, $date, $cartData);
+                unset($_SESSION['readyOrder']);
+                header("Location: /cnpm-final/InventoryController/customerMenuPage/success/" . $orderId);
+            }
+        }
+
+
+
+
         public function confirmOrder() {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $orderId = $_POST['orderId'];

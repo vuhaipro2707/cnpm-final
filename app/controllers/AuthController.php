@@ -1,5 +1,7 @@
 <?php
     class AuthController extends Controller {
+
+
         public function login() {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $username = $_POST['username'];
@@ -60,6 +62,8 @@
                 $this->view('mainpage/register');
             }
         }
+
+        
     }
 
 
