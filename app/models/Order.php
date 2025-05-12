@@ -29,6 +29,29 @@
             return $orderId;
         }
 
+        private function mergeOrderbyOrderId($rows) {
+            $orders = [];
+
+            foreach ($rows as $row) {
+                $orderId = $row['orderId'];
+
+                if (!isset($orders[$orderId])) {
+                    $orderData = $row;
+                    unset($orderData['itemId'], $orderData['quantity']);
+                    $orderData['itemsPerOrder'] = [];
+
+                    $orders[$orderId] = $orderData;
+                }
+
+                $orders[$orderId]['itemsPerOrder'][] = [
+                    'itemId' => $row['itemId'],
+                    'quantity' => $row['quantity']
+                ];
+            }
+
+            return array_values($orders);
+        }
+
 
         public function getAllOrders() {
             $this->db->query("
@@ -46,55 +69,33 @@
             ");
 
             $rows =  $this->db->resultSet();
-            $orders = [];
-
-            foreach ($rows as $row) {
-                $orderId = $row['orderId'];
-
-                if (!isset($orders[$orderId])) {
-                    $orderData = $row;
-                    unset($orderData['itemId'], $orderData['quantity']);
-                    $orderData['itemsPerOrder'] = [];
-
-                    $orders[$orderId] = $orderData;
-                }
-
-                $orders[$orderId]['itemsPerOrder'][] = [
-                    'itemId' => $row['itemId'],
-                    'quantity' => $row['quantity']
-                ];
-            }
-
-            $orders = array_values($orders);
-            return $orders;
+            return $this->mergeOrderbyOrderId($rows);
         }
 
         public function getOrderById($orderId) {
-            $this->db->query('SELECT * FROM orderincludeitem oi 
+            $this->db->query("SELECT * FROM orderincludeitem oi 
                             JOIN `order` o ON oi.orderId = o.orderId 
-                            WHERE oi.orderId = :orderId');
+                            WHERE oi.orderId = :orderId
+                            ORDER BY 
+                            CASE 
+                                WHEN o.status = 'success' THEN 1
+                                WHEN o.status = 'pending' THEN 2
+                                WHEN o.status = 'failed' THEN 3
+                                ELSE 4
+                            END,
+                            o.date ASC");
             $this->db->bind(':orderId', $orderId);
             $rows = $this->db->resultSet();
-            $orders = [];
+            return $this->mergeOrderbyOrderId($rows)[$orderId];
+        }
 
-            foreach ($rows as $row) {
-                $orderId = $row['orderId'];
-
-                if (!isset($orders[$orderId])) {
-                    $orderData = $row;
-                    unset($orderData['itemId'], $orderData['quantity']);
-                    $orderData['itemsPerOrder'] = [];
-
-                    $orders[$orderId] = $orderData;
-                }
-
-                $orders[$orderId]['itemsPerOrder'][] = [
-                    'itemId' => $row['itemId'],
-                    'quantity' => $row['quantity']
-                ];
-            }
-
-            return $orders[$orderId];
+        public function getOrderByCustomerId($customerId) {
+            $this->db->query('SELECT * FROM orderincludeitem oi 
+                            JOIN `order` o ON oi.orderId = o.orderId 
+                            WHERE o.customerId = :customerId');
+            $this->db->bind(':customerId', $customerId);
+            $rows = $this->db->resultSet();
+            return $this->mergeOrderbyOrderId($rows);
         }
 
 

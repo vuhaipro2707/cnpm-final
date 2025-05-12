@@ -1,6 +1,6 @@
 <div class="container py-4">
     
-    <h2 class="mb-4 text-center">Đơn hàng đang chờ</h2>
+    <h2 class="mb-4 text-center">Đơn hàng của bạn</h2>
 
     <?php if (!empty($data['error'])): ?>
         <div class="alert alert-danger"><?php echo $data['error']; ?></div>
@@ -36,6 +36,12 @@
                         $statusText = 'Đang xác nhận';
                         break;
                 }
+
+                // Tính tổng tiền
+                $totalPrice = 0;
+                foreach ($order['itemsPerOrder'] as $item) {
+                    $totalPrice += $item['price'] * $item['quantity'];
+                }
             ?>
 
             <div class="col">
@@ -44,11 +50,7 @@
                         Đơn #<?= $order['orderId'] ?> - Bàn <?= $order['tableNumber'] ?>
                     </div>
                     <div class="card-body">
-                        <h5 class="card-title text-primary"><?= htmlspecialchars($order['status']) ?></h5>
-
-                        <p class="card-text">
-                            <strong>Khách hàng:</strong> <?= htmlspecialchars($order['customer']['name']) ?>
-                        </p>
+                        <h5 class="card-title text-primary"><?= $statusText ?></h5>
 
                         <p class="card-text"><strong>Món đã đặt:</strong></p>
                         <ul class="mb-3 ps-3">
@@ -63,27 +65,22 @@
                             <?php endforeach; ?>
                         </ul>
 
-                        <p class="card-text text-muted">
-                            <em>Thời gian: <?= htmlspecialchars($order['date']) ?></em>
-                        </p>
+                        <div class="d-flex justify-content-between">
+                            <em class="text-muted">Thời gian: <?= htmlspecialchars($order['date']) ?></em>
+                            <strong class="text-end text-success">Tổng: <?= number_format($totalPrice, 0, ',', '.') ?>đ</strong>
+                        </div>
                     </div>
-                    
-                    <?php if ($order['status'] == 'pending'): ?>
-                        <div class="card-footer d-flex justify-content-between align-items-center">
-                            <form method="POST" action="/cnpm-final/OrderController/confirmOrder" class="m-0 p-0">
-                                <input type="hidden" name="orderId" value="<?= $order['orderId'] ?>">
-                                <input type="hidden" name="status" value="success">
-                                <button type="submit" class="btn btn-success btn-sm">Hoàn tất</button>
-                            </form>
 
-                            <form method="POST" action="/cnpm-final/OrderController/confirmOrder" class="m-0 p-0">
+                    <?php if ($order['status'] == 'success'): ?>
+                        <div class="card-footer text-end">
+                            <form method="POST" action="/cnpm-final/OrderController/confirmOrder" class="d-inline">
                                 <input type="hidden" name="orderId" value="<?= $order['orderId'] ?>">
-                                <input type="hidden" name="status" value="failed">
-                                <button type="submit" class="btn btn-danger btn-sm">Thất bại</button>
+                                <input type="hidden" name="status" value="paid">
+                                <button type="submit" class="btn btn-primary btn-sm">Thanh toán</button>
                             </form>
                         </div>
                     <?php endif; ?>
-                    
+
                 </div>
             </div>
         <?php endforeach; ?>

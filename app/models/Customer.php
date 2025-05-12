@@ -16,7 +16,7 @@
         public function getCustomerIdByUserName($username) {
             $this->db->query("SELECT customerId FROM customer WHERE username = :username");
             $this->db->bind(':username', $username);
-            return $this->db->single();
+            return $this->db->single()['customerId'];
         }
     }
 ?>

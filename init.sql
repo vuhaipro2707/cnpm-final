@@ -54,7 +54,7 @@ CREATE TABLE Inventory (
 -- Order
 CREATE TABLE `Order` (
     orderId INT AUTO_INCREMENT PRIMARY KEY,
-    status ENUM('success', 'failed', 'pending') default 'pending',
+    status ENUM('paid', 'success', 'failed', 'pending') default 'pending',
     date DATE,
     tableNumber VARCHAR(10),
     customerId INT,

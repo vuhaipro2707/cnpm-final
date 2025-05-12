@@ -27,6 +27,14 @@
             $this->view('staff/confirm_order', ['orders'=> $orders, 'error'=> $error]);
         }
 
+        public function customerTrackOrderPage($error = null) {
+            $orderModel = $this->model('Order');
+            $customerModel = $this->model('Customer');
+            $ordersRaw = $orderModel->getOrderByCustomerId($customerModel->getCustomerIdByUserName($_SESSION['username']));
+            $orders = $this->getAllOrdersInfo($ordersRaw);
+            $this->view('customer/track_order', ['orders' => $orders,'error'=> $error]);
+        }
+
         public function createOrder() {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Kiểm tra giỏ hàng trong session readyOrder
@@ -47,7 +55,7 @@
                 $customerModel = $this->model('Customer');
 
                 // Lấy thông tin đơn hàng
-                $customerId = $customerModel->getCustomerIdByUserName($_SESSION['username'])['customerId'];
+                $customerId = $customerModel->getCustomerIdByUserName($_SESSION['username']);
                 $tableNumber = $_SESSION['readyOrder']['tableNumber'];
                 $date = date('Y-m-d H:i:s');
                 $status = 'pending';
@@ -65,6 +73,7 @@
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $orderId = $_POST['orderId'];
                 $status = $_POST['status'];
+                
 
                 $orderModel = $this->model('Order');
                 $inventoryModel = $this->model('Inventory');
