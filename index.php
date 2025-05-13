@@ -7,7 +7,7 @@
 <?php 
     // class auto require
     spl_autoload_register(function ($class) {
-        $paths = ['core/', 'app/controllers/', 'app/models/'];
+        $paths = ['core/', 'app/controllers/', 'app/models/', 'app/services/'];
     
         foreach ($paths as $path) {
             $file = $path . $class . '.php';

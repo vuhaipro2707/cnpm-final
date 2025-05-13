@@ -75,7 +75,7 @@ CREATE TABLE OrderIncludeItem (
 CREATE TABLE Promotion (
     promotionId INT AUTO_INCREMENT PRIMARY KEY,
     discountCode VARCHAR(50),
-    discountRate DECIMAL(5,2),
+    discountRate INT,
     startDate DATE,
     endDate DATE
 );
@@ -83,10 +83,12 @@ CREATE TABLE Promotion (
 -- Payment
 CREATE TABLE Payment (
     paymentId INT AUTO_INCREMENT PRIMARY KEY,
-    method VARCHAR(50),
-    status VARCHAR(20),
+    method ENUM('cash', 'transfer', 'momo', 'qr'),
+    status ENUM('completed', 'pending') default 'pending',
     totalAmount INT,
-    orderId INT,
+    pointsApplied INT,
+    pointsBonus INT,
+    orderId INT UNIQUE,
     promotionId INT,
     FOREIGN KEY (orderId) REFERENCES `Order`(orderId),
     FOREIGN KEY (promotionId) REFERENCES Promotion(promotionId)
@@ -188,14 +190,9 @@ INSERT INTO OrderIncludeItem (orderId, itemId, quantity) VALUES
 (4, 3, 1);
 
 INSERT INTO Promotion (discountCode, discountRate, startDate, endDate) VALUES
-('DISC10', 10.00, '2025-05-01', '2025-05-31'),
-('SAVE15', 15.00, '2025-05-05', '2025-06-05'),
-('OFF5', 5.00, '2025-04-01', '2025-04-30');
+('DISC10', 10, '2025-05-01', '2025-05-31'),
+('SAVE15', 15, '2025-05-05', '2025-06-05'),
+('OFF5', 5, '2025-04-01', '2025-04-30');
 
-INSERT INTO Payment (method, status, totalAmount, orderId, promotionId) VALUES
-('cash', 'completed', 85000, 1, 2),
-('card', 'completed', 70000, 2, 3),
-('cash', 'cancelled', 40000, 3, 1),
-('momo', 'completed', 105000, 4, 3);
 
 

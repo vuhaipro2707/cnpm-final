@@ -1,38 +1,22 @@
 <?php
     class OrderController extends Controller {
-        private function getAllOrdersInfo($orders) {
-            $customerModel = $this->model('Customer');
-            $ItemModel = $this->model('Item');
-
-            foreach ($orders as &$order) {
-                $order['customer'] = $customerModel->getCustomerById($order['customerId']);
-                unset($order['customerId']);
-
-                foreach ($order['itemsPerOrder'] as &$item) {
-                    $itemInfo = $ItemModel->getItemById($item['itemId']);
-                    unset($item['itemId']);
-                    $item = array_merge($item, $itemInfo);
-                }
-                unset($item);
-            }
-            unset($order);
-            return $orders;
-        }
 
         public function orderConfirmPage($error = null) {
             $orderModel = $this->model('Order');
             $ordersRaw = $orderModel->getAllOrders();
-            $orders = $this->getAllOrdersInfo($ordersRaw);
+            $enricher = new DataEnricher([$this, 'model']);
+            $orders = $enricher->getAllOrdersInfo($ordersRaw);
 
             $this->view('staff/confirm_order', ['orders'=> $orders, 'error'=> $error]);
         }
 
-        public function customerTrackOrderPage($error = null) {
+        public function customerTrackOrderPage($error = null, $success = null) {
             $orderModel = $this->model('Order');
             $customerModel = $this->model('Customer');
             $ordersRaw = $orderModel->getOrderByCustomerId($customerModel->getCustomerIdByUserName($_SESSION['username']));
-            $orders = $this->getAllOrdersInfo($ordersRaw);
-            $this->view('customer/track_order', ['orders' => $orders,'error'=> $error]);
+            $enricher = new DataEnricher([$this, 'model']);
+            $orders = $enricher->getAllOrdersInfo($ordersRaw);
+            $this->view('customer/track_order', ['orders' => $orders,'error'=> $error, 'success'=> $success]);
         }
 
         public function createOrder() {
