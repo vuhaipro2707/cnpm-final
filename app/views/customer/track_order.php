@@ -73,9 +73,9 @@
 
                     <?php if ($order['status'] == 'success'): ?>
                         <div class="card-footer text-end">
-                            <form method="POST" action="/cnpm-final/OrderController/confirmOrder" class="d-inline">
+                            <form method="POST" action="/cnpm-final/PaymentController/customerChoosePaymentPage" class="d-inline">
                                 <input type="hidden" name="orderId" value="<?= $order['orderId'] ?>">
-                                <input type="hidden" name="status" value="paid">
+                                <input type="hidden" name="totalPrice" value="<?=$totalPrice?>">
                                 <button type="submit" class="btn btn-primary btn-sm">Thanh toán</button>
                             </form>
                         </div>
@@ -86,3 +86,4 @@
         <?php endforeach; ?>
     </div>
 </div>
+

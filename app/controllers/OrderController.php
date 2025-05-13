@@ -82,7 +82,7 @@
                 if ($status === 'success') {
                     // Lấy danh sách món
                     $orderItems = $orderModel->getOrderById($orderId)['itemsPerOrder'];
-
+                    
                     // Kiểm tra tồn kho
                     foreach ($orderItems as $item) {
                         $inventoryItem = $inventoryModel->getItemById($item['itemId']);

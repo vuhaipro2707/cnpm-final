@@ -86,7 +86,8 @@
                             o.date ASC");
             $this->db->bind(':orderId', $orderId);
             $rows = $this->db->resultSet();
-            return $this->mergeOrderbyOrderId($rows)[$orderId];
+            
+            return $this->mergeOrderbyOrderId($rows)[0];
         }
 
         public function getOrderByCustomerId($customerId) {
