@@ -17,8 +17,11 @@ CREATE TABLE Staff (
     position VARCHAR(50),
     username VARCHAR(50),
     isManager TINYINT(1) DEFAULT 0,
+    salary INT,
+    phone VARCHAR(20),
     FOREIGN KEY (username) REFERENCES Account(username)
 );
+
 
 
 -- Customer
@@ -104,11 +107,11 @@ INSERT INTO Account (username, password, role) VALUES
 ('customercharlie', '1', 'customer'),
 ('customerdiana', '1', 'customer');
 
-INSERT INTO Staff (name, position, username, isManager) VALUES
-('John Doe', 'Barista', 'staff', 0),
-('Lucy Smith', 'Waiter', 'lucystaff', 0),
-('Bob Manager', 'Cashier', 'bobmanager', 1),
-('Anna Waiter', 'Waiter', 'manager', 1);
+INSERT INTO Staff (name, position, username, isManager, salary, phone) VALUES
+('John Doe', 'Barista', 'staff', 0, 3000, '0123456789'),
+('Lucy Smith', 'Waiter', 'lucystaff', 0, 2800, '0987654321'),
+('Bob Manager', 'Cashier', 'bobmanager', 1, 4000, '0111222333'),
+('Anna Waiter', 'Waiter', 'manager', 1, 3500, '0222333444');
 
 
 INSERT INTO Customer (name, phone, points, username) VALUES

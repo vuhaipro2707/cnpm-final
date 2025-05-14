@@ -12,32 +12,46 @@
             return $this->db->single();
         }
 
-        public function createAccount($username, $password, $role, $name, $phone) {
-            $this->db->query("INSERT INTO account (username, password, role) VALUES (:username, :password, :role)");
+        public function createAccount($username, $password, $role, $avatar) {
+            $this->db->query("INSERT INTO Account (username, password, role, avatar) 
+                            VALUES (:username, :password, :role, :avatar)");
             $this->db->bind(':username', $username);
             $this->db->bind(':password', $password);
             $this->db->bind(':role', $role);
+            $this->db->bind(':avatar', $avatar);
             $this->db->execute();
-
-            if ($role === 'customer') {
-                $this->db->query("INSERT INTO customer (name, phone, points, username) VALUES (:name, :phone, :points, :username)");
-                $this->db->bind(':name', $name);
-                $this->db->bind(':phone', $phone);
-                $this->db->bind(':points', 0);
-                $this->db->bind(':username', $username);
-                return $this->db->execute();
-            }
-
-            // if ($role === 'staff') {
-
-            // }
-
-            return true;
         }
 
         public function updateAvatar($username, $avatar) {
             $this->db->query("UPDATE account SET avatar = :avatar WHERE username = :username");
             $this->db->bind(':avatar', $avatar);
+            $this->db->bind(':username', $username);
+            $this->db->execute();
+        }
+
+        public function updatePassword($username, $password) {
+            $this->db->query("UPDATE account SET password = :password WHERE username = :username");
+            $this->db->bind(':password', $password);
+            $this->db->bind(':username', $username);
+            $this->db->execute();
+        }
+
+        public function updateRole($username, $role) {
+            $this->db->query("UPDATE account SET role = :role WHERE username = :username");
+            $this->db->bind(':role', $role);
+            $this->db->bind(':username', $username);
+            $this->db->execute();
+        }
+
+        public function updateUsername($oldUsername, $newUsername) {
+            $this->db->query("UPDATE account SET username = :newUsername WHERE username = :oldUsername");
+            $this->db->bind(':newUsername', $newUsername);
+            $this->db->bind(':oldUsername', $oldUsername);
+            $this->db->execute();
+        }
+
+        public function deleteAccount($username) {
+            $this->db->query("DELETE FROM account WHERE username = :username");
             $this->db->bind(':username', $username);
             $this->db->execute();
         }

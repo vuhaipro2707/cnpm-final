@@ -37,16 +37,23 @@
             exit;
         }
 
-        public function register() {
+        public function customerRegister() {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $name = $_POST['name'];
                 $phone = $_POST['phone'];
                 $username = $_POST['username'];
                 $password = $_POST['password'];
                 $confirm = $_POST['confirm_password'];
-                $role = $_POST['role'];
+                $role = 'customer';
+
+                $_SESSION['remCusRegister'] = [
+                    'name' => $name,
+                    'phone' => $phone,
+                    'username' => $username
+                ];
 
                 $accountModel = $this->model('Account');
+                $customerModel = $this->model('Customer');
 
                 if ($password !== $confirm) {
                     $this->view('mainpage/register', ['error' => 'Mật khẩu xác nhận không khớp.']);
@@ -58,8 +65,29 @@
                     return;
                 }
 
+                // Xử lý upload avatar (nếu có)
+                $avatar = null;
+                if (!empty($_FILES['avatar']['name'])) {
+                    $uploadDir = __DIR__ . '/../../public/images/avatar/';
+                    $ext = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
+                    $filename = 'avatar_' . $username . '.' . $ext; // Tên chuẩn hóa
+                    $uploadPath = $uploadDir . $filename;
+
+                    // Xoá ảnh cũ nếu có (nếu có ảnh cũ thì sẽ xóa trước khi upload ảnh mới)
+                    foreach (glob($uploadDir . 'avatar_' . $username . '.*') as $oldFile) {
+                        unlink($oldFile);
+                    }
+
+                    if (move_uploaded_file($_FILES['avatar']['tmp_name'], $uploadPath)) {
+                        $avatar = $filename;
+                    }
+                }
+
                 // $hash = password_hash($password, PASSWORD_DEFAULT);
-                $accountModel->createAccount($username, $password, $role, $name, $phone);
+                $accountModel->createAccount($username, $password, $role, $avatar);
+                $customerModel->createCustomer($name, $username, $phone, 0);
+
+                unset($_SESSION['remCusRegister']);
 
                 $this->view('mainpage/login', ['success' => 'Đăng ký thành công! Bạn có thể đăng nhập.']);
             } else {
@@ -67,7 +95,84 @@
             }
         }
 
-        
+        public function staffRegister() {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                // Lấy dữ liệu từ form
+                $name = $_POST['name'];
+                $position = $_POST['position'];
+                $username = $_POST['username'];
+                $password = $_POST['password'];
+                $confirmPassword = $_POST['confirmPassword'];
+                $salary = str_replace('.', '', $_POST['salary']); // Bỏ dấu chấm
+                $phone = $_POST['phone'];
+                $isManager = isset($_POST['isManager']) ? 1 : 0;
+
+                // Lưu dữ liệu tạm để đổ lại form nếu lỗi
+                $_SESSION['remStaRegister'] = [
+                    'name' => $name,
+                    'position' => $position,
+                    'username' => $username,
+                    'salary' => $_POST['salary'], // Lưu bản gốc có dấu chấm
+                    'phone' => $phone,
+                    'isManager' => $isManager
+                ];
+
+                // Kiểm tra các trường bắt buộc
+                if (empty($name) || empty($position) || empty($username) || empty($password) || empty($salary) || empty($phone)) {
+                    $_SESSION['error'] = "Vui lòng điền đầy đủ thông tin!";
+                    header('Location: /cnpm-final/HomeController/staffRegisterPage');
+                    exit;
+                }
+
+                // Kiểm tra mật khẩu khớp
+                if ($password !== $confirmPassword) {
+                    $_SESSION['error'] = "Mật khẩu và xác nhận mật khẩu không khớp!";
+                    header('Location: /cnpm-final/HomeController/staffRegisterPage');
+                    exit;
+                }
+
+                // Kiểm tra username đã tồn tại
+                $accountModel = $this->model('Account');
+                if ($accountModel->getAccountInfoByUsername($username)) {
+                    $_SESSION['error'] = "Tên đăng nhập đã tồn tại!";
+                    header('Location: /cnpm-final/HomeController/staffRegisterPage');
+                    exit;
+                }
+
+                // Xử lý avatar (nếu có)
+                $avatar = null;
+                if (!empty($_FILES['avatar']['name'])) {
+                    $uploadDir = __DIR__ . '/../../public/images/avatar/';
+                    $ext = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
+                    $filename = 'avatar_' . $username . '.' . $ext;
+                    $uploadPath = $uploadDir . $filename;
+
+                    foreach (glob($uploadDir . 'avatar_' . $username . '.*') as $oldFile) {
+                        unlink($oldFile);
+                    }
+
+                    if (move_uploaded_file($_FILES['avatar']['tmp_name'], $uploadPath)) {
+                        $avatar = $filename;
+                    }
+                }
+
+                // Tạo tài khoản và thông tin nhân viên
+                $role = $isManager ? 'manager' : 'staff';
+                $accountModel->createAccount($username, $password, $role, $avatar);
+
+                $staffModel = $this->model('Staff');
+                $staffModel->createStaff($name, $position, $username, $isManager, $phone, $salary);
+
+                // Xóa session tạm nếu thành công
+                unset($_SESSION['remStaRegister']);
+
+                $_SESSION['success'] = "Tạo tài khoản nhân viên thành công!";
+                header('Location: /cnpm-final/StaffController/managerStaffManagePage');
+                exit;
+            }
+        }
+
+
     }
 
 

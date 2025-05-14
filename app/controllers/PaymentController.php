@@ -155,7 +155,7 @@
 
                 $customer = $customerModel->getCustomerByOrderId($orderId);
 
-                $customerModel->setPoints($customer['customerId'], $pointsLefts + $pointsBonus);
+                $customerModel->updateCustomerPoints($customer['customerId'], $pointsLefts + $pointsBonus);
 
                 $orderModel->confirmOrder($orderId, 'paid');
 

@@ -16,7 +16,7 @@ class DataEnricher {
 
     public function getAllOrdersInfo(array $orders): array {
         foreach ($orders as &$order) {
-            $order['customer'] = $this->customerModel->getCustomerById($order['customerId']);
+            $order['customer'] = $this->customerModel->getCustomerByCustomerId($order['customerId']);
             unset($order['customerId']);
 
             foreach ($order['itemsPerOrder'] as &$item) {

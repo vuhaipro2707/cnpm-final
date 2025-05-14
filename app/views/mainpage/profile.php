@@ -5,7 +5,6 @@ $info = ($role === 'customer') ? $data['customer'] : $data['staff'];
 $imgSrc = empty($_SESSION['avatar']) 
     ? '/cnpm-final/public/images/avatar/default.jpg' 
     : '/cnpm-final/public/images/avatar/' . $_SESSION['avatar'];
-
 ?>
 
 <div class="container mt-5">
@@ -21,8 +20,10 @@ $imgSrc = empty($_SESSION['avatar'])
                     <p><strong>📞 Số điện thoại:</strong> <?= htmlspecialchars($info['phone']) ?></p>
                     <p><strong>⭐ Điểm tích lũy:</strong> <?= number_format($info['points']) ?> điểm</p>
                 <?php elseif ($role === 'staff' || $role === 'manager'): ?>
+                    <p><strong>📞 Số điện thoại:</strong> <?= htmlspecialchars($info['phone']) ?></p>
                     <p><strong>🏷️ Chức vụ:</strong> <?= htmlspecialchars($info['position']) ?></p>
-                    <p><strong>🧑‍💼 Vị trí:</strong> <?= htmlspecialchars($role) ?></p>
+                    <p><strong>🧑‍💼 Vị trí:</strong> <?= $role === 'manager' ? 'Quản lý' : 'Nhân viên' ?></p>
+                    <p><strong>💰 Lương:</strong> <?= number_format($info['salary'], 0, ',', '.') ?> VND</p>
                 <?php endif; ?>
             </div>
 
@@ -34,7 +35,7 @@ $imgSrc = empty($_SESSION['avatar'])
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal Cập Nhật -->
 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <form method="POST" enctype="multipart/form-data" action="/cnpm-final/ProfileController/update">
@@ -44,7 +45,6 @@ $imgSrc = empty($_SESSION['avatar'])
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
-
           <input type="hidden" name="role" value="<?= $role ?>">
           <input type="hidden" name="username" value="<?= $info['username'] ?>">
 
@@ -66,6 +66,15 @@ $imgSrc = empty($_SESSION['avatar'])
                   <label class="form-label">Chức vụ</label>
                   <input type="text" class="form-control" name="position" value="<?= htmlspecialchars($info['position']) ?>" required>
               </div>
+              <div class="mb-3">
+                  <label class="form-label">Số điện thoại</label>
+                  <input type="text" class="form-control" name="phone" value="<?= htmlspecialchars($info['phone']) ?>" required>
+              </div>
+              <div class="mb-3">
+                    <label class="form-label">Lương (VND)</label>
+                    <input type="text" class="form-control" name="salary" id="salaryInput" 
+                        value="<?= number_format($info['salary'], 0, ',', '.') ?>" required>
+              </div>
           <?php endif; ?>
 
           <div class="mb-3">
@@ -83,3 +92,11 @@ $imgSrc = empty($_SESSION['avatar'])
     </form>
   </div>
 </div>
+
+<script>
+document.getElementById('salaryInput').addEventListener('input', function (e) {
+    let value = e.target.value.replace(/\D/g, ''); // Bỏ ký tự không phải số
+    value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.'); // Thêm dấu chấm mỗi 3 số
+    e.target.value = value;
+});
+</script>

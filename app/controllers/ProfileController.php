@@ -32,15 +32,14 @@
                 $name = trim($_POST['name']);
                 $avatar = null;
 
-                
-                // 👉 Xử lý avatar nếu có
+                // Xử lý ảnh đại diện nếu có
                 if (!empty($_FILES['avatar']['name'])) {
                     $uploadDir = __DIR__ . '/../../public/images/avatar/';
                     $ext = pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION);
-                    $filename = 'avatar_' . $username . '.' . $ext; // tên chuẩn hóa
+                    $filename = 'avatar_' . $username . '.' . $ext;
                     $uploadPath = $uploadDir . $filename;
 
-                    // Xoá ảnh cũ nếu có (tùy chọn)
+                    // Xoá ảnh cũ (nếu tồn tại)
                     foreach (glob($uploadDir . 'avatar_' . $username . '.*') as $oldFile) {
                         unlink($oldFile);
                     }
@@ -50,18 +49,26 @@
                     }
                 }
 
-                // Cập nhật dữ liệu chính
                 if ($role === 'customer') {
                     $phone = trim($_POST['phone']);
                     $model = $this->model('Customer');
-                    $model->setCustomerInfoByUsername($username, $name, $phone);
+                    $customerId = $model->getCustomerByUserName($username)['customerId'];
+                    $model->updateCustomerName($customerId, $name);
+                    $model->updateCustomerPhone($customerId, $phone);
+
                 } elseif ($role === 'staff' || $role === 'manager') {
                     $position = trim($_POST['position']);
+                    $phone = trim($_POST['phone']);
+                    $salary = str_replace('.', '', $_POST['salary']); // loại bỏ dấu chấm
                     $model = $this->model('Staff');
-                    $model->setStaffInfoByUsername($username, $name, $position);
+                    $customerId = $model->getStaffByUserName($username)['staffId'];
+                    $model->updateStaffName($customerId, $name);
+                    $model->updateStaffPhone($customerId, $phone);
+                    $model->updateStaffSalary($customerId, $salary);
+                    $model->updateStaffPosition($customerId, $position);
                 }
 
-                // Cập nhật avatar nếu có
+                // Cập nhật ảnh đại diện nếu có
                 if ($avatar) {
                     $accModel = $this->model('Account');
                     $accModel->updateAvatar($username, $avatar);
@@ -72,8 +79,6 @@
                 exit;
             }
         }
-
-
 
     }
 ?>
