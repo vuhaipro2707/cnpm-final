@@ -6,5 +6,8 @@
     <?php } elseif ($role == 'customer') { ?>
         <a class="btn" href="/cnpm-final/InventoryController/customerMenuPage">Menu</a>
         <a class="btn" href="/cnpm-final/OrderController/customerTrackOrderPage">Track Order</a>
-    <?php }
-?>
+    <?php } ?>
+
+    <?php if ($role == 'manager') { ?>
+        <a class="btn" href="/cnpm-final/StaffController/managerStaffManagePage">viewstaff</a>
+    <?php } ?>

@@ -13,12 +13,14 @@
             return $this->db->single();
         }
 
-
+        public function getCustomerByUserName($username) {
+            $this->db->query("SELECT * FROM customer WHERE username = :username");
+            $this->db->bind(':username', $username);
+            return $this->db->single();
+        }
 
         public function getCustomerIdByUserName($username) {
-            $this->db->query("SELECT customerId FROM customer WHERE username = :username");
-            $this->db->bind(':username', $username);
-            return $this->db->single()['customerId'];
+            return $this->getCustomerByUserName($username)['customerId'];
         }
 
         public function setPoints($customerId, $points) {
@@ -37,6 +39,14 @@
             ");
             $this->db->bind(':orderId', $orderId);
             return $this->db->single();
+        }
+
+        public function setCustomerInfoByUsername($username, $name, $phone) {
+            $this->db->query("UPDATE customer SET name = :name, phone = :phone WHERE username = :username");
+            $this->db->bind(':name', $name);
+            $this->db->bind(':phone', $phone);
+            $this->db->bind(':username', $username);
+            $this->db->execute();
         }
 
     }

@@ -19,7 +19,7 @@
         }
 
         public function getAllItemsGroupType() {
-            $this->db->query('SELECT item.itemId, item.name, item.price, inventory.quantity, item.note, item.type FROM inventory LEFT JOIN item ON inventory.itemId = item.itemId');
+            $this->db->query('SELECT item.itemId, item.name, item.price, inventory.quantity, item.note, item.type, item.image FROM inventory LEFT JOIN item ON inventory.itemId = item.itemId');
             $rows = $this->db->resultSet();
 
             $itemsByType = [];

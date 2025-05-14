@@ -12,8 +12,8 @@
             $this->view('mainpage/register');
         }
 
-        public function menuPage() {
-            $this->view('customer/menu_order');
-        }
+        // public function profilePage() {
+        //     $this->view('mainpage/profile');
+        // }
     }
 ?>

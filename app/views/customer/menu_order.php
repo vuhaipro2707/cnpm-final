@@ -57,7 +57,11 @@ foreach ($cartItems as $item) {
                     <?php foreach ($items as $index => $item): ?>
                         <div class="col-md-4 mb-4">
                             <div class="card h-100">
-                                <img src="https://picsum.photos/300/300" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                <?php
+                                $defaultImage = 'https://picsum.photos/300/300';
+                                $imageLink = !empty($item['image']) ? ('/cnpm-final/public/images/productCard/' . $item['image']) : $defaultImage;
+                                ?>
+                                <img src="<?= $imageLink ?>" class="card-img-top" style="height: 200px; object-fit: cover;">
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="card-title"><?php echo $item['name']; ?></h5>
                                     <p class="card-text"><?php echo $item['note']; ?></p>

@@ -10,22 +10,26 @@
 
                 $accountModel = $this->model('Account');
                 $account = $accountModel->getAccountInfoByUsername($username);
-                var_dump($account);
 
-                //if ($user && password_verify($password, $user['password'])) {
-                if ($account && $password == $account['password'] && $role == $account['role']) {
-                    $_SESSION['username'] = $account['username'];
-                    $_SESSION['role'] = $account['role'];
-                    header('Location: /cnpm-final/HomeController/index');
-                    exit;
-                } else {
-                    $error = "Sai tài khoản hoặc mật khẩu hoặc vai trò.";
-                    $this->view('mainpage/login', ['error' => $error]);
+                if ($account && $password == $account['password']) {
+                    if (
+                        $role === $account['role'] || ($role === 'staff' && $account['role'] === 'manager' || $account['role'] === 'admin')
+                    ) {
+                        $_SESSION['username'] = $account['username'];
+                        $_SESSION['role'] = $account['role'];
+                        $_SESSION['avatar'] = $account['avatar'];
+                        header('Location: /cnpm-final/HomeController/index');
+                        exit;
+                    }
                 }
+
+                $error = "Sai tài khoản hoặc mật khẩu hoặc vai trò.";
+                $this->view('mainpage/login', ['error' => $error]);
             } else {
                 $this->view('mainpage/login');
             }
         }
+
 
         public function logout() {
             session_destroy();

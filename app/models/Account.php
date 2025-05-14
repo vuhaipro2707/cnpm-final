@@ -35,6 +35,14 @@
             return true;
         }
 
+        public function updateAvatar($username, $avatar) {
+            $this->db->query("UPDATE account SET avatar = :avatar WHERE username = :username");
+            $this->db->bind(':avatar', $avatar);
+            $this->db->bind(':username', $username);
+            $this->db->execute();
+        }
+
+
     }
 
 ?>

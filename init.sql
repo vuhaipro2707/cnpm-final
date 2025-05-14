@@ -6,7 +6,8 @@ USE coffee_shop;
 CREATE TABLE Account (
     username VARCHAR(50) PRIMARY KEY,
     password VARCHAR(100),
-    role ENUM('staff', 'manager', 'admin', 'customer')
+    role ENUM('staff', 'manager', 'admin', 'customer'),
+    avatar VARCHAR(255)
 );
 
 -- Staff
@@ -15,14 +16,10 @@ CREATE TABLE Staff (
     name VARCHAR(100),
     position VARCHAR(50),
     username VARCHAR(50),
+    isManager TINYINT(1) DEFAULT 0,
     FOREIGN KEY (username) REFERENCES Account(username)
 );
 
--- Manager (là một phần của staff)
-CREATE TABLE Manager (
-    staffId INT PRIMARY KEY,
-    FOREIGN KEY (staffId) REFERENCES Staff(staffId)
-);
 
 -- Customer
 CREATE TABLE Customer (
@@ -98,7 +95,7 @@ CREATE TABLE Payment (
 
 INSERT INTO Account (username, password, role) VALUES
 ('staff', '1', 'staff'),
-('manager01', '1', 'manager'),
+('manager', '1', 'manager'),
 ('admin99', '1', 'admin'),
 ('lucystaff', '1', 'staff'),
 ('bobmanager', '1', 'manager'),
@@ -107,16 +104,11 @@ INSERT INTO Account (username, password, role) VALUES
 ('customercharlie', '1', 'customer'),
 ('customerdiana', '1', 'customer');
 
-INSERT INTO Staff (name, position, username) VALUES
-('John Doe', 'Barista', 'staff'),
-('Lucy Smith', 'Cashier', 'lucystaff'),
-('Bob Manager', 'Manager', 'bobmanager'),
-('Anna Waiter', 'Waiter', 'manager01');
-
--- Bob Manager and Anna Waiter are both managers
-INSERT INTO Manager (staffId) VALUES
-(3),
-(4);
+INSERT INTO Staff (name, position, username, isManager) VALUES
+('John Doe', 'Barista', 'staff', 0),
+('Lucy Smith', 'Waiter', 'lucystaff', 0),
+('Bob Manager', 'Cashier', 'bobmanager', 1),
+('Anna Waiter', 'Waiter', 'manager', 1);
 
 
 INSERT INTO Customer (name, phone, points, username) VALUES

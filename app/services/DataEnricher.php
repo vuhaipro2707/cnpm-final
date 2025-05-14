@@ -4,12 +4,14 @@ class DataEnricher {
     protected $customerModel;
     protected $itemModel;
     protected $promotionModel;
+    protected $accountModel;
 
     public function __construct($modelLoader) {
         // Truyền vào callable để load model khi cần (nếu bạn dùng kiểu `$this->model()` trong controller)
         $this->customerModel = $modelLoader('Customer');
         $this->itemModel = $modelLoader('Item');
         $this->promotionModel = $modelLoader('Promotion');
+        $this->accountModel = $modelLoader('Account');
     }
 
     public function getAllOrdersInfo(array $orders): array {
@@ -38,4 +40,18 @@ class DataEnricher {
 
         return $payments;
     }
+
+    public function getFullStaffInfo(array $staffList): array {
+        foreach ($staffList as &$staff) {
+            $account = $this->accountModel->getAccountInfoByUsername($staff['username']);
+
+            // Gộp thêm thông tin từ bảng Account
+            $staff['role'] = $account['role'] ?? null;
+            $staff['avatar'] = $account['avatar'] ?? null;
+        }
+        unset($staff); // Xoá reference
+
+        return $staffList;
+    }
+
 }
