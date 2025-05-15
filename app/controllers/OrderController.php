@@ -84,9 +84,11 @@
                         }
                     }
 
+
                     // Trừ tồn kho
                     foreach ($orderItems as $item) {
-                        $inventoryModel->deleteItem($item['itemId'], $item['quantity']);
+                        $inventoryItem = $inventoryModel->getItemById($item['itemId']);
+                        $inventoryModel->updateQuantity($item['itemId'], $inventoryItem['quantity'] - $item['quantity']);
                     }
                 }
 
