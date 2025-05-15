@@ -16,9 +16,10 @@
                     📋 Danh sách khuyến mãi
 
                     <?php
-                        $activeCount = count(array_filter($data['promotion'], function ($promo) {
-                            return $promo['active'] == 1;
-                        }));
+                    $today = date('Y-m-d'); 
+                    $activeCount = count(array_filter($data['promotion'], function ($promo) use ($today) {
+                        return $promo['active'] == 1 && $promo['endDate'] >= $today;
+                    }));
                     ?>
                     <span class="badge bg-light text-dark">
                         <?= $activeCount ?> mã đang hoạt động
