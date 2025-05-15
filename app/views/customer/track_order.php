@@ -1,4 +1,10 @@
 <div class="container py-4">
+    <div class="mb-3">
+        <a href="/cnpm-final/InventoryController/customerMenuPage" class="btn btn-outline-secondary">
+            ← Về lại menu
+        </a>
+    </div>
+
     
     <h2 class="mb-4 text-center">Đơn hàng của bạn</h2>
 

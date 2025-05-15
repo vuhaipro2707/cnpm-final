@@ -91,9 +91,17 @@
         }
 
         public function getOrderByCustomerId($customerId) {
-            $this->db->query('SELECT * FROM orderincludeitem oi 
+            $this->db->query("SELECT * FROM orderincludeitem oi 
                             JOIN `order` o ON oi.orderId = o.orderId 
-                            WHERE o.customerId = :customerId');
+                            WHERE o.customerId = :customerId
+                            ORDER BY 
+                            CASE 
+                                WHEN o.status = 'success' THEN 1
+                                WHEN o.status = 'pending' THEN 2
+                                WHEN o.status = 'failed' THEN 3
+                                ELSE 4
+                            END,
+                            o.date ASC");
             $this->db->bind(':customerId', $customerId);
             $rows = $this->db->resultSet();
             return $this->mergeOrderbyOrderId($rows);

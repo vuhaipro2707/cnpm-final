@@ -8,7 +8,7 @@
         }
 
         public function getAllItems() {
-            $this->db->query("SELECT item.itemId, item.name, item.price, inventory.quantity, item.note, item.type FROM inventory LEFT JOIN item ON inventory.itemId = item.itemId");
+            $this->db->query("SELECT * FROM inventory LEFT JOIN item ON inventory.itemId = item.itemId");
             return $this->db->resultSet();
         }
 
@@ -33,15 +33,32 @@
             return $itemsByType;
         }
 
-        public function deleteItem($itemId, $quantity) {
-            // Giảm số lượng sản phẩm
-            $this->db->query("UPDATE inventory SET quantity = quantity - :qty WHERE itemId = :itemId AND quantity >= :qty");
-            $this->db->bind(':itemId', $itemId);
-            $this->db->bind(':qty', $quantity);
+        public function addItem($name, $price, $quantity, $note, $type, $image) {
+            $this->db->query("INSERT INTO item (name, price, note, type, image) VALUES (:name, :price, :note, :type, :image)");
+            $this->db->bind(':name', $name);
+            $this->db->bind(':price', $price);
+            $this->db->bind(':note', $note);
+            $this->db->bind(':type', $type);
+            $this->db->bind(':image', $image);
             $this->db->execute();
 
-            // Nếu sau khi trừ số lượng <= 0 thì cập nhật quantity về 0 thay vì xóa
-            $this->db->query("UPDATE inventory SET quantity = 0 WHERE itemId = :itemId AND quantity <= 0");
+            $itemId = $this->db->lastInsertId();
+
+            $this->db->query("INSERT INTO inventory (itemId, quantity) VALUES (:itemId, :quantity)");
+            $this->db->bind(':itemId', $itemId);
+            $this->db->bind(':quantity', $quantity);
+            $this->db->execute();
+        }
+
+        public function deleteItem($itemId) {
+            $this->db->query("DELETE FROM inventory WHERE itemId = :itemId");
+            $this->db->bind(':itemId', $itemId);
+            $this->db->execute();
+        }
+
+        public function updateQuantity($itemId, $quantity) {
+            $this->db->query("UPDATE inventory SET quantity = :quantity WHERE itemId = :itemId");
+            $this->db->bind(':quantity', $quantity);
             $this->db->bind(':itemId', $itemId);
             $this->db->execute();
         }

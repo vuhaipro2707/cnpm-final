@@ -77,7 +77,8 @@ CREATE TABLE Promotion (
     discountCode VARCHAR(50),
     discountRate INT,
     startDate DATE,
-    endDate DATE
+    endDate DATE,
+    active TINYINT(1)
 );
 
 -- Payment
@@ -184,10 +185,10 @@ INSERT INTO OrderIncludeItem (orderId, itemId, quantity) VALUES
 (4, 2, 1),
 (4, 3, 1);
 
-INSERT INTO Promotion (discountCode, discountRate, startDate, endDate) VALUES
-('DISC10', 10, '2025-05-01', '2025-05-31'),
-('SAVE15', 15, '2025-05-05', '2025-06-05'),
-('OFF5', 5, '2025-04-01', '2025-04-30');
+INSERT INTO Promotion (discountCode, discountRate, startDate, endDate, active) VALUES
+('DISC10', 10, '2025-05-01', '2025-05-31', 1),
+('SAVE15', 15, '2025-05-05', '2025-06-05', 1),
+('OFF5', 5, '2025-04-01', '2025-04-30', 1);
 
 
 

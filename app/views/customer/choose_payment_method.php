@@ -1,12 +1,10 @@
-<?php
-    var_dump($data['payment']);
-?>
-
 <div class="container-fluid mt-5">
     <div class="row">
         <!-- Sidebar hóa đơn -->
         <div class="col-md-4">
+            
             <div class="card shadow rounded mx-auto" style="max-width: 450px;">
+                
                 <div class="card-header bg-light text-dark fw-bold">
                     Phiếu Đơn Hàng
                 </div>
@@ -71,6 +69,7 @@
                     $pointsApplied = $data['payment']['pointsApplied'] ?? 0;
                     $discountRate = (int)($promotion['discountRate'] ?? 0);
                     $discount = round($discountRate / 100 * $total);
+                    $totalAfterDiscount = $total - $discount;
                     $pointReduce = $pointsApplied * 1000;
                     $finalTotal = $total - $discount - $pointReduce;
                     $pointsBonus = round($finalTotal / 10000);
@@ -90,9 +89,10 @@
                         <p>Điểm tích luỹ nhận thêm: <strong><?= $pointsBonus ?> điểm</strong></p>
                     </div>
                 </div>
+                
             </div>
-
         </div>
+
 
         <!-- Main chọn phương thức thanh toán -->
         <div class="col-md-8 d-flex flex-column align-items-center">

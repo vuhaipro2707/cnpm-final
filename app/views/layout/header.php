@@ -21,8 +21,9 @@ $imgSrc = empty($_SESSION['avatar'])
           <img src="<?=$imgSrc?>" alt="avatar" class="rounded-circle" style="width: 40px; height: 40px;">
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
-          <li><a class="dropdown-item" href="/cnpm-final/ProfileController/index">👤 Hồ sơ</a></li>
-          <li><a class="dropdown-item" href="/cnpm-final/AuthController/logout">🔒 Đăng xuất</a></li>
+          <li><a class="dropdown-item" href="/cnpm-final/ProfileController/index">Hồ sơ</a></li>
+          <li><a class="dropdown-item" href="/cnpm-final/HomeController/changePasswordPage">Đổi mật khẩu</a></li>
+          <li><a class="dropdown-item" href="/cnpm-final/AuthController/logout">Đăng xuất</a></li>
         </ul>
       </div>
     <?php endif; ?>

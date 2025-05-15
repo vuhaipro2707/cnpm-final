@@ -70,6 +70,13 @@
                     // Kiểm tra tồn kho
                     foreach ($orderItems as $item) {
                         $inventoryItem = $inventoryModel->getItemById($item['itemId']);
+
+                        if (!$inventoryItem) {
+                            $error = "Món không tồn tại hoặc đã bị xóa, hãy từ chối đơn.";
+                            $this->orderConfirmPage($error);
+                            return;
+                        }
+
                         if ($inventoryItem['quantity'] < $item['quantity']) {
                             $error = "Hiện tại không đủ số lượng món, vui lòng thử lại.";
                             $this->orderConfirmPage($error);

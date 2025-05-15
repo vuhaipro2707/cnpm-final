@@ -20,10 +20,8 @@
             }
         }
 
-        // public function profilePage() {
-        //     $this->view('mainpage/profile');
-        // }
-
-
+        public function changePasswordPage() {
+            $this->view('mainpage/change_password');
+        }
     }
 ?>

@@ -18,6 +18,9 @@ foreach ($cartItems as $item) {
         <div class="col-md-2">
             <div class="position-sticky pt-4" style="top: 2rem;">
                 <div class="text-center mb-4">
+                    <a href="/cnpm-final/OrderController/customerTrackOrderPage" class="btn btn-outline-dark w-100 mb-2">
+                        🧾 Xem tất cả order
+                    </a>
                     <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#tableModal">
                         Chọn bàn
                     </button>
@@ -30,13 +33,14 @@ foreach ($cartItems as $item) {
 
                 <!-- Danh sách loại món -->
                 <h5 class="mb-3">Loại món</h5>
-                <ul class="list-group">
+                <div class="list-group">
                     <?php foreach ($data['itemsByType'] as $type => $items): ?>
-                        <li class="list-group-item">
-                            <a href="#<?php echo urlencode($type); ?>"><?php echo $type; ?></a>
-                        </li>
+                        <a href="#<?php echo urlencode($type); ?>"
+                        class="list-group-item list-group-item-action">
+                            <?php echo htmlspecialchars($type); ?>
+                        </a>
                     <?php endforeach; ?>
-                </ul>
+                </div>
             </div>
         </div>
 
@@ -65,7 +69,7 @@ foreach ($cartItems as $item) {
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="card-title"><?php echo $item['name']; ?></h5>
                                     <p class="card-text"><?php echo $item['note']; ?></p>
-                                    <form method="POST" action="/cnpm-final/CartController/addToCart" class="mt-auto">
+                                    <form method="POST" action="/cnpm-final/CartController/addToCart" class="mt-auto add-to-cart-form">
                                         <input type="hidden" name="itemId" value="<?php echo $item['itemId']; ?>">
                                         <input type="hidden" name="name" value="<?php echo $item['name']; ?>">
                                         <input type="hidden" name="price" value="<?php echo $item['price']; ?>">
@@ -82,7 +86,7 @@ foreach ($cartItems as $item) {
     </div>
 </div>
 
-<!-- Modal -->
+<!-- Modal chọn bàn -->
 <div class="modal fade" id="tableModal" tabindex="-1" aria-labelledby="tableModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg modal-dialog-centered">
     <div class="modal-content">
@@ -95,7 +99,7 @@ foreach ($cartItems as $item) {
           <div class="row row-cols-4 g-3">
             <?php for ($i = 1; $i <= 12; $i++): ?>
               <div class="col">
-                <form method="POST" action="/cnpm-final/CartController/setTable">
+                <form method="POST" action="/cnpm-final/CartController/setTable" class="add-to-cart-form">
                   <input type="hidden" name="tableNumber" value="T<?php echo $i; ?>">
                   <button type="submit" class="btn btn-outline-secondary w-100">T<?php echo $i; ?></button>
                 </form>
@@ -108,12 +112,6 @@ foreach ($cartItems as $item) {
   </div>
 </div>
 
-
-
-<!-- Floating cart button -->
-<!-- <a href="/cnpm-final/OrderController/cart" class="btn btn-warning rounded-circle position-fixed" style="bottom: 20px; right: 20px; width: 60px; height: 60px;">
-    🛒
-</a> -->
 
 <!-- Nút giỏ hàng nổi -->
 <a href="#" class="btn btn-warning rounded-circle position-fixed" style="bottom: 20px; right: 20px; width: 60px; height: 60px;" data-bs-toggle="modal" data-bs-target="#cartModal">
@@ -156,6 +154,23 @@ foreach ($cartItems as $item) {
   </div>
 </div>
 
+<!-- Nút Kéo lên đầu trang (góc trái dưới, tròn, xám nhẹ) -->
+<button onclick="scrollToTop()" id="scrollTopBtn" class="position-fixed" 
+    style="
+        bottom: 20px;
+        left: 20px;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        background-color: #e0e0e0;
+        color: #333;
+        border: none;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        display: none;
+        z-index: 999;
+    ">
+    ⬆️
+</button>
 
 
 
@@ -232,4 +247,37 @@ foreach ($cartItems as $item) {
 
     attachHandlers();
 
+    // Khôi phục scroll sau khi trang load
+    document.querySelectorAll("form.add-to-cart-form").forEach(form => {
+        form.addEventListener("submit", () => {
+            sessionStorage.setItem("scrollPosition", window.scrollY);
+        });
+    });
+
+    
+    window.addEventListener("load", () => {
+        const scrollPos = sessionStorage.getItem("scrollPosition");
+        if (scrollPos !== null) {
+            window.scrollTo(0, parseInt(scrollPos));
+            sessionStorage.removeItem("scrollPosition");
+        }
+    });
+
+     // Hiện nút khi kéo xuống 200px
+    window.onscroll = function () {
+        const scrollBtn = document.getElementById("scrollTopBtn");
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+            scrollBtn.style.display = "block";
+        } else {
+            scrollBtn.style.display = "none";
+        }
+    };
+
+    // Kéo lên đầu trang
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+    }
 </script>

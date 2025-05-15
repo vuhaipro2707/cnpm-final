@@ -101,7 +101,7 @@
                     header("Location: /cnpm-final/PaymentController/customerChoosePaymentPage/" . $orderId);
                     exit;
                 }
-
+            
                 if ($totalAfterDiscount < $points * 1000) {
                     $_SESSION['payment']['promoError'] = 'Số điểm tích lũy sử dụng đã vượt quá số tiền, hãy thử lại.';
                     header("Location: /cnpm-final/PaymentController/customerChoosePaymentPage/" . $orderId);

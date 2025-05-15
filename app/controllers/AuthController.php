@@ -172,8 +172,48 @@
             }
         }
 
+        public function changePassword() {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $username = $_SESSION['username'];
+                $oldPassword = $_POST['old_password'];
+                $newPassword = $_POST['new_password'];
+                $confirmPassword = $_POST['confirm_password'];
+                $accountModel = $this->model('Account');
+
+                if ($newPassword !== $confirmPassword) {
+                    $_SESSION['message'] = [
+                        'type' => 'danger',
+                        'text' => 'Mật khẩu mới và xác nhận không khớp!'
+                    ];
+                } else {
+                    $user = $accountModel->getAccountInfoByUsername($username);
+                    if (!$user) {
+                        $_SESSION['message'] = [
+                            'type' => 'danger',
+                            'text' => 'Không tìm thấy tài khoản!'
+                        ];
+                    } else {
+                        if ($oldPassword === $user['password']) {
+                            $accountModel->updatePassword($username, $newPassword);
+                            $_SESSION['message'] = [
+                                'type' => 'success',
+                                'text' => 'Đổi mật khẩu thành công!'
+                            ];
+                        } else {
+                            $_SESSION['message'] = [
+                                'type' => 'danger',
+                                'text' => 'Mật khẩu cũ không đúng!'
+                            ];
+                        }
+                    }
+                }
+
+                // Sau khi xử lý xong, redirect để tránh submit lại form
+                header("Location: /cnpm-final/HomeController/changePasswordPage");
+                exit();
+            }
+        }
+
 
     }
-
-
 ?>
