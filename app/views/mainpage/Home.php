@@ -13,7 +13,14 @@ $role = $_SESSION['role'] ?? 'guest';
                         <a href="/cnpm-final/OrderController/orderConfirmPage" class="btn btn-outline-primary w-100 py-3">
                             📦 Xác nhận đơn hàng
                         </a>
+                        
                     </div>
+                    <div class="col">
+                        <a href="/cnpm-final/TableController/manageTableLayout" class="btn btn-outline-primary w-100 py-3">
+                            Quản lý bàn
+                        </a>
+                    </div>
+                    
                 <?php endif; ?>
 
                 <?php if ($role === 'customer'): ?>

@@ -10,6 +10,11 @@ foreach ($cartItems as $item) {
     $totalPrice += $item['itemPrice'] * $item['quantity'];
 }
 
+$tablesByPos = [];
+foreach ($data['table'] as $table) {
+    $tablesByPos[$table['layoutPosition']] = $table;
+}
+
 ?>
 
 <div class="container-fluid px-4">
@@ -95,22 +100,74 @@ foreach ($cartItems as $item) {
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
       </div>
       <div class="modal-body">
-        <div class="container">
-          <div class="row row-cols-4 g-3">
-            <?php for ($i = 1; $i <= 12; $i++): ?>
-              <div class="col">
-                <form method="POST" action="/cnpm-final/CartController/setTable" class="add-to-cart-form">
-                  <input type="hidden" name="tableNumber" value="T<?php echo $i; ?>">
-                  <button type="submit" class="btn btn-outline-secondary w-100">T<?php echo $i; ?></button>
-                </form>
+        <div class="row">
+          <!-- Grid bàn (trái) -->
+          <div class="col-lg-9">
+            <div class="container-fluid">
+              <div class="row row-cols-6 g-2">
+                <?php for ($row = 0; $row < 6; $row++): ?>
+                  <?php for ($col = 0; $col < 6; $col++):
+                    $pos = "{$row}_{$col}";
+                    if (!isset($tablesByPos[$pos])) {
+                      echo '<div class="col d-grid">
+                              <button class="btn btn-outline-secondary w-100 py-4" disabled>&nbsp;</button>
+                            </div>';
+                      continue;
+                    }
+
+                    $table = $tablesByPos[$pos];
+                    $status = $table['status'];
+                    $tableNumber = htmlspecialchars($table['tableNumber']);
+
+                    if ($status == 'inactive') {
+                        echo '<div class="col d-grid">
+                              <button class="btn btn-outline-secondary w-100 py-4" disabled>&nbsp;</button>
+                            </div>';
+                      continue;
+                    }
+                    if ($status === 'serving') {
+                      echo '<div class="col d-grid">
+                              <form method="POST" action="/cnpm-final/CartController/setTable" class="d-grid" onsubmit="return confirmServingTable(\'' . $tableNumber . '\')">
+                                <input type="hidden" name="tableNumber" value="' . $tableNumber . '">
+                                <button type="submit" class="btn btn-danger w-100 py-4">' . $tableNumber . '</button>
+                              </form>
+                            </div>';
+                    } elseif ($status === 'empty') {
+                      echo '<div class="col d-grid">
+                              <form method="POST" action="/cnpm-final/CartController/setTable" class="d-grid">
+                                <input type="hidden" name="tableNumber" value="' . $tableNumber . '">
+                                <button type="submit" class="btn btn-info w-100 py-4">' . $tableNumber . '</button>
+                              </form>
+                            </div>';
+                    }
+                  endfor; ?>
+                <?php endfor; ?>
               </div>
-            <?php endfor; ?>
+            </div>
+          </div>
+
+          <!-- Chú thích (phải) -->
+          <div class="col-lg-3">
+            <p><strong>Chú thích:</strong></p>
+            <div class="mb-2 d-flex align-items-center">
+              <button class="btn btn-danger btn-sm me-2" style="width: 2rem; height: 2rem;"></button>
+              <span>Bàn đang phục vụ</span>
+            </div>
+            <div class="mb-2 d-flex align-items-center">
+              <button class="btn btn-info btn-sm me-2" disabled style="width: 2rem; height: 2rem;"></button>
+              <span>Bàn trống</span>
+            </div>
+            <div class="mb-2 d-flex align-items-center">
+              <button class="btn btn-outline-secondary btn-sm me-2" disabled style="width: 2rem; height: 2rem;"></button>
+              <span>Không có bàn</span>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 
 
 <!-- Nút giỏ hàng nổi -->
@@ -153,6 +210,10 @@ foreach ($cartItems as $item) {
     </div>
   </div>
 </div>
+
+
+
+
 
 <!-- Nút Kéo lên đầu trang (góc trái dưới, tròn, xám nhẹ) -->
 <button onclick="scrollToTop()" id="scrollTopBtn" class="position-fixed" 
@@ -247,26 +308,26 @@ foreach ($cartItems as $item) {
 
     attachHandlers();
 
-    // Khôi phục scroll sau khi trang load
-    document.querySelectorAll("form.add-to-cart-form").forEach(form => {
-        form.addEventListener("submit", () => {
-            sessionStorage.setItem("scrollPosition", window.scrollY);
-        });
-    });
+    // Khôi phục scroll sớm, tránh nhảy giật sau load
+    const scrollPos = sessionStorage.getItem("scrollPosition");
+    if (scrollPos !== null) {
+      window.scrollTo(0, parseInt(scrollPos)); // cuộn lại ngay lập tức
+      sessionStorage.removeItem("scrollPosition");
+    }
 
-    
-    window.addEventListener("load", () => {
-        const scrollPos = sessionStorage.getItem("scrollPosition");
-        if (scrollPos !== null) {
-            window.scrollTo(0, parseInt(scrollPos));
-            sessionStorage.removeItem("scrollPosition");
-        }
+    // Lưu lại scroll trước khi submit form
+    window.addEventListener("DOMContentLoaded", () => {
+      document.querySelectorAll("form.add-to-cart-form").forEach(form => {
+        form.addEventListener("submit", () => {
+          sessionStorage.setItem("scrollPosition", window.scrollY);
+        });
+      });
     });
 
      // Hiện nút khi kéo xuống 200px
     window.onscroll = function () {
         const scrollBtn = document.getElementById("scrollTopBtn");
-        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 200) {
+        if (document.body.scrollTop > 200 || document.documentElement.scrollTop > 100) {
             scrollBtn.style.display = "block";
         } else {
             scrollBtn.style.display = "none";
@@ -280,4 +341,8 @@ foreach ($cartItems as $item) {
             behavior: "smooth"
         });
     }
+
+  function confirmServingTable(tableNumber) {
+    return confirm("Bàn số " + tableNumber + " đang được phục vụ. Bạn có chắc muốn chọn bàn này không?");
+  }
 </script>

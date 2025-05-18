@@ -145,8 +145,11 @@
 
                 $paymentModel = $this->model('Payment');
                 $orderModel = $this->model('Order');
-                $customerModel = $this->model('customer');
-
+                $customerModel = $this->model('Customer');
+                $tableModel = $this->model('Table');
+                
+                
+                
 
                 $paymentModel->setMethod($orderId, $method);
                 $paymentModel->setTotalAmount($orderId, $totalAmount);
@@ -158,6 +161,16 @@
                 $customerModel->updateCustomerPoints($customer['customerId'], $pointsLefts + $pointsBonus);
 
                 $orderModel->confirmOrder($orderId, 'paid');
+
+                //xử lý table
+                $tableNumber = $orderModel->getOrderById($orderId)['tableNumber'];
+                $orderOnTableLeft = $orderModel->getAllPendingSuccessOrdersByTableNumber($tableNumber);
+
+                if(empty($orderOnTableLeft)) {
+                    $pos = $tableModel->getTableByTableNumber($tableNumber)['layoutPosition'];
+                    $tableModel->updateStatusByPosition($pos, 'empty');
+                }
+
 
                 $this->view("customer/success_payment", ["orderId"=> $orderId]);
                 exit;

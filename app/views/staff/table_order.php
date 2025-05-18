@@ -1,6 +1,10 @@
 <div class="container py-4">
-    
-    <h2 class="mb-4 text-center">Đơn hàng đang chờ</h2>
+    <div class="mb-3">
+        <a href="/cnpm-final/TableController/manageTableLayout" class="btn btn-outline-secondary">
+            ← Về lại Quản lý Table
+        </a>
+    </div>
+    <h2 class="mb-4 text-center">Đơn hàng của bàn <?= $data['tableNumber'] ?> (<?=$data['layoutPosition']?>)</h2>
 
     <?php if (!empty($data['error'])): ?>
         <div class="alert alert-danger"><?php echo $data['error']; ?></div>

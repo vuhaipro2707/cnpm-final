@@ -8,13 +8,18 @@
         }
 
         public function customerMenuPage($state = null, $orderId = null) {
-            $data = $this->model('Inventory')->getAllItemsGroupType();
+            $tableModel = $this->model('Table');
+            $inventoryModel = $this->model('Inventory');
+
+            $inventory = $inventoryModel->getAllItemsGroupType();
+            $table = $tableModel->getAllLayout();
+
             if ($state == 'error') {
-                $this->view('customer/menu_order', ['itemsByType'=> $data, 'error'=> 'Bạn chưa đặt món hoặc chưa có bàn vui lòng thử lại.']);
+                $this->view('customer/menu_order', ['itemsByType'=> $inventory , 'table' => $table, 'error'=> 'Bạn chưa đặt món hoặc chưa có bàn vui lòng thử lại.']);
             } else if ($state == 'success') {
-                $this->view('customer/menu_order', ['itemsByType'=> $data, 'success'=> 'Đặt món thành công! Hãy kiểm tra đơn đã đặt. Mã đơn: ' . $orderId]);
+                $this->view('customer/menu_order', ['itemsByType'=> $inventory , 'table' => $table, 'success'=> 'Đặt món thành công! Hãy kiểm tra đơn đã đặt. Mã đơn: ' . $orderId]);
             } else {
-                $this->view('customer/menu_order', ['itemsByType'=> $data]);
+                $this->view('customer/menu_order', ['itemsByType'=> $inventory , 'table' => $table]);
             }
         }
 

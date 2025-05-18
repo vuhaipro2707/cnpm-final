@@ -19,6 +19,19 @@
             $this->view('customer/track_order', ['orders' => $orders,'error'=> $error, 'success'=> $success]);
         }
 
+        public function tableTrackOrder() {
+            if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+                $tableNumber = $_POST['tableNumber'];
+                $layoutPosition = $_POST['layoutPosition'];
+                $orderModel = $this->model('Order');
+                $ordersRaw = $orderModel->getAllPendingSuccessOrdersByTableNumber($tableNumber);
+                $enricher = new DataEnricher([$this, 'model']);
+                $orders = $enricher->getAllOrdersInfo($ordersRaw);
+
+                $this->view('staff/table_order', ['orders'=> $orders, 'tableNumber'=> $tableNumber, 'layoutPosition' => $layoutPosition]);
+            }
+        }
+
         public function createOrder() {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Kiểm tra giỏ hàng trong session readyOrder
@@ -37,14 +50,21 @@
 
                 $orderModel = $this->model('Order');
                 $customerModel = $this->model('Customer');
+                $tableModel = $this->model('Table');
 
                 // Lấy thông tin đơn hàng
                 $customerId = $customerModel->getCustomerIdByUserName($_SESSION['username']);
                 $tableNumber = $_SESSION['readyOrder']['tableNumber'];
+                date_default_timezone_set('Asia/Ho_Chi_Minh');
                 $date = date('Y-m-d H:i:s');
                 $status = 'pending';
+                $layoutPosition = $tableModel->getTableByTableNumber($tableNumber)['layoutPosition'];
+
                 // Tạo đơn hàng
-                $orderId = $orderModel->createOrder($tableNumber, $customerId, $status, $date, $cartData);
+                $orderId = $orderModel->createOrder($tableNumber, $layoutPosition, $customerId, $status, $date, $cartData);
+                
+                // Đổi trạng thái bàn
+                $tableModel->updateStatusByPosition($layoutPosition, 'serving');
                 unset($_SESSION['readyOrder']);
                 header("Location: /cnpm-final/InventoryController/customerMenuPage/success/" . $orderId);
             }
@@ -61,6 +81,7 @@
 
                 $orderModel = $this->model('Order');
                 $inventoryModel = $this->model('Inventory');
+                $tableModel = $this->model('Table');
 
                 // Nếu trạng thái là success thì kiểm tra và trừ kho
                 if ($status === 'success') {
@@ -91,9 +112,21 @@
                         $inventoryModel->updateQuantity($item['itemId'], $inventoryItem['quantity'] - $item['quantity']);
                     }
                 }
-
+                
                 // Cập nhật trạng thái đơn
                 $orderModel->confirmOrder($orderId, $status);
+
+                if ($status === 'failed') {
+                    //xử lý table
+                    $tableNumber = $orderModel->getOrderById($orderId)['tableNumber'];
+                    $orderOnTableLeft = $orderModel->getAllPendingSuccessOrdersByTableNumber($tableNumber);
+
+                    if(empty($orderOnTableLeft)) {
+                        $pos = $tableModel->getTableByTableNumber($tableNumber)['layoutPosition'];
+                        $tableModel->updateStatusByPosition($pos, 'empty');
+                    }
+                }
+
                 header('Location: /cnpm-final/OrderController/orderConfirmPage');
                 exit;
             }

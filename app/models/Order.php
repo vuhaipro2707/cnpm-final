@@ -6,9 +6,10 @@
             $this->db = new Database();
         }
 
-        public function createOrder($tableNumber, $customerId, $status, $date, $cartData) {
-            $this->db->query("INSERT INTO `order` (tableNumber, customerId, status, date) VALUES (:tableNumber, :customerId, :status, :date)");
+        public function createOrder($tableNumber, $layoutPosition, $customerId, $status, $date, $cartData) {
+            $this->db->query("INSERT INTO `order` (tableNumber, layoutPosition, customerId, status, date) VALUES (:tableNumber, :layoutPosition, :customerId, :status, :date)");
             $this->db->bind(':tableNumber', $tableNumber);
+            $this->db->bind(':layoutPosition', $layoutPosition);
             $this->db->bind(':customerId', $customerId);
             $this->db->bind(':status', $status);
             $this->db->bind(':date', $date);
@@ -28,6 +29,29 @@
 
             return $orderId;
         }
+
+        public function getAllPendingSuccessOrdersByTableNumber($tableNumber) {
+            $this->db->query("
+            SELECT * 
+            FROM orderincludeitem oi
+            JOIN `order` o ON oi.orderId = o.orderId
+            WHERE o.tableNumber = :tableNumber AND (o.status = 'pending' OR o.status = 'success')
+            ORDER BY 
+                CASE 
+                    WHEN o.status = 'pending' THEN 1
+                    WHEN o.status = 'failed' THEN 2
+                    WHEN o.status = 'success' THEN 3
+                    ELSE 4
+                END,
+                o.date ASC
+            ");
+
+            $this->db->bind("tableNumber", $tableNumber);
+
+            $rows =  $this->db->resultSet();
+            return $this->mergeOrderbyOrderId($rows);
+        }
+
 
         private function mergeOrderbyOrderId($rows) {
             $orders = [];

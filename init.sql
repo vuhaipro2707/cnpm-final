@@ -51,14 +51,22 @@ CREATE TABLE Inventory (
     FOREIGN KEY (itemId) REFERENCES Item(itemId)
 );
 
+CREATE TABLE TableLayout (
+    layoutPosition VARCHAR(10) PRIMARY KEY, -- ví dụ: '3_5' cho hàng 3, cột 5
+    tableNumber VARCHAR(10),
+    status ENUM('empty', 'serving', 'paid', 'inactive') DEFAULT 'empty'
+);
+
 -- Order
 CREATE TABLE `Order` (
     orderId INT AUTO_INCREMENT PRIMARY KEY,
     status ENUM('paid', 'success', 'failed', 'pending') default 'pending',
-    date DATE,
+    date DATETIME,
+    layoutPosition VARCHAR(10),
     tableNumber VARCHAR(10),
     customerId INT,
-    FOREIGN KEY (customerId) REFERENCES Customer(customerId)
+    FOREIGN KEY (customerId) REFERENCES Customer(customerId),
+    FOREIGN KEY (layoutPosition) REFERENCES TableLayout(layoutPosition)
 );
 
 -- include (Order - Item)
@@ -94,6 +102,9 @@ CREATE TABLE Payment (
     FOREIGN KEY (orderId) REFERENCES `Order`(orderId),
     FOREIGN KEY (promotionId) REFERENCES Promotion(promotionId)
 );
+
+
+
 
 
 
@@ -168,12 +179,18 @@ INSERT INTO Inventory (itemId, quantity) VALUES
 (19, 75),  -- Macchiato
 (20, 160); -- Nước chanh
 
+INSERT INTO TableLayout (tableNumber, layoutPosition, status) VALUES
+('T1', '0_0', 'serving'),
+('T2', '0_1', 'serving'),
+('T3', '1_0', 'serving'),
+('T4', '1_1', 'serving');
 
-INSERT INTO `Order` (status, date, tableNumber, customerId) VALUES
-('pending', '2025-05-10', 'T1', 1),
-('pending', '2025-05-10', 'T2', 2),
-('pending', '2025-05-09', 'T3', 3),
-('pending', '2025-05-08', 'T1', 4);
+
+INSERT INTO `Order` (status, date, tableNumber, layoutPosition, customerId) VALUES
+('pending', '2025-05-10 12:00:00', 'T1', '0_0', 1),
+('pending', '2025-05-10 13:00:00', 'T2', '0_1', 2),
+('pending', '2025-05-09 18:30:00', 'T3', '1_0', 3),
+('pending', '2025-05-08 19:15:00', 'T4', '1_1', 4);
 
 INSERT INTO OrderIncludeItem (orderId, itemId, quantity) VALUES
 (1, 1, 2),
