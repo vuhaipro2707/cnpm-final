@@ -2,8 +2,14 @@
     <div class="row">
         <!-- Sidebar hóa đơn -->
         <div class="col-md-4">
-            
+            <?php if (!empty($_SESSION['message'])): ?>
+                <div class="alert alert-<?= $_SESSION['message']['type'] ?>" role="alert">
+                    <?= htmlspecialchars($_SESSION['message']['text']) ?>
+                </div>
+                <?php unset($_SESSION['message']); ?>
+            <?php endif; ?>
             <div class="card shadow rounded mx-auto" style="max-width: 450px;">
+                
                 
                 <div class="card-header bg-light text-dark fw-bold">
                     Phiếu Đơn Hàng
@@ -74,6 +80,7 @@
                     $finalTotal = $total - $discount - $pointReduce;
                     $pointsBonus = round($finalTotal / 10000);
                     $pointsLefts = $customer['points'] - $pointsApplied;
+                
                     ?>
 
                     <!-- Hiển thị tổng kết -->
@@ -177,6 +184,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Bạn đã chọn phương thức thanh toán: Tiền mặt</p>
+                    <input type="hidden" name="customerPoints" value="<?=$customer['points']?>">
                     <input type="hidden" name="pointsLefts" value="<?=$pointsLefts?>">
                     <input type="hidden" name="pointsBonus" value="<?=$pointsBonus?>">
                     <input type="hidden" name="total" value="<?=$finalTotal?>">
@@ -204,6 +212,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Bạn đã chọn phương thức thanh toán: Chuyển khoản</p>
+                    <input type="hidden" name="customerPoints" value="<?=$customer['points']?>">
                     <input type="hidden" name="pointsLefts" value="<?=$pointsLefts?>">
                     <input type="hidden" name="pointsBonus" value="<?=$pointsBonus?>">
                     <input type="hidden" name="total" value="<?=$finalTotal?>">
@@ -231,6 +240,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Bạn đã chọn phương thức thanh toán: Ví điện tử Momo</p>
+                    <input type="hidden" name="customerPoints" value="<?=$customer['points']?>">
                     <input type="hidden" name="pointsLefts" value="<?=$pointsLefts?>">
                     <input type="hidden" name="pointsBonus" value="<?=$pointsBonus?>">
                     <input type="hidden" name="total" value="<?=$finalTotal?>">
@@ -258,6 +268,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Bạn đã chọn phương thức thanh toán: Quét mã QR</p>
+                    <input type="hidden" name="customerPoints" value="<?=$customer['points']?>">
                     <input type="hidden" name="pointsLefts" value="<?=$pointsLefts?>">
                     <input type="hidden" name="pointsBonus" value="<?=$pointsBonus?>">
                     <input type="hidden" name="total" value="<?=$finalTotal?>">

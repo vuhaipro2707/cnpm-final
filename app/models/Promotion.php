@@ -9,6 +9,20 @@
             return $this->single();
         }
 
+        public function getPromotionByDiscountCode($discountCode) {
+            $this->query("SELECT * FROM promotion WHERE discountCode = :discountCode");
+            $this->bind(':discountCode', $discountCode);
+            
+            return $this->single();
+        }
+
+        public function getPromotionAvailableByPromotionId($promotionId) {
+            $this->query("SELECT * FROM promotion WHERE promotionId = :promotionId AND startDate <= CURDATE() AND endDate >= CURDATE() AND active = 1");
+            $this->bind(':promotionId', $promotionId);
+            
+            return $this->single();
+        }
+
         public function getPromotionByPromotionId($promotionId) {
             $this->query("SELECT * FROM promotion WHERE promotionId = :promotionId");
             $this->bind(':promotionId', $promotionId);

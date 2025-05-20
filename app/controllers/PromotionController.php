@@ -73,6 +73,20 @@
             $startDate = DateTime::createFromFormat('m/d/Y', $startDateStr);
             $startDateStr = $startDate->format('Y-m-d');
             $endDate = DateTime::createFromFormat('Y-m-d', $endDateStr);
+
+            $promotionModel = $this->model('Promotion');
+
+            $discountCodeCheck = $promotionModel->getPromotionByDiscountCode($discountCode);
+
+            if ($discountCode && $discountCodeCheck) {
+                $_SESSION['message'] = [
+                    'type' => 'danger',
+                    'text' => "Mã " . $discountCode . " đã tồn tại rồi, hãy xoá mã và thử lại."
+                ];
+
+                header('Location: /cnpm-final/PromotionController/managePromotionPage');
+                exit;
+            }
             
             if ($startDate > $endDate) {
                 $_SESSION['message'] = [
@@ -84,7 +98,6 @@
                 exit;
             }
 
-            $promotionModel = $this->model('Promotion');
             $promotionModel->createPromotion($discountCode, $discountRate, $startDateStr, $endDateStr, $active);
 
             $_SESSION['message'] = ['type' => 'success', 'text' => 'Đã thêm Khuyến mãi thành công! Mã khuyến mãi: ' . $discountCode];

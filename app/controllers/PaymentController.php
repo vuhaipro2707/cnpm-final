@@ -142,22 +142,49 @@
                 $totalAmount = $_POST['total'] ?? null;
                 $pointsBonus = $_POST['pointsBonus'] ?? null;
                 $pointsLefts = $_POST['pointsLefts'] ?? null;
+                $customerPoints = $_POST['customerPoints'] ?? null;
 
                 $paymentModel = $this->model('Payment');
                 $orderModel = $this->model('Order');
                 $customerModel = $this->model('Customer');
                 $tableModel = $this->model('Table');
+                $promotionModel = $this->model('Promotion');
+
+                $payment = $paymentModel->getPaymentByOrderId($orderId);
+                $paymentStatus = $payment['status'];
+                $promotionId = $payment['promotionId'];
+                $promotionCheck = $promotionModel->getPromotionAvailableByPromotionId($promotionId);                
                 
+
+
+                $customer = $customerModel->getCustomerByOrderId($orderId);
+
+                if ($paymentStatus == 'completed') {
+                    $_SESSION['message'] = ['type' => 'danger', 'text' => "Đơn hàng số " . $orderId . " đã được thanh toán."];
+                    $paymentModel->setPointsApplied($orderId, null);
+                    header("Location: /cnpm-final/OrderController/customerTrackOrderPage");
+                    exit;
+                }
                 
+                if ($customerPoints != $customer['points']) {
+                    $_SESSION['message'] = ['type' => 'danger', 'text' => 'Điểm của người dùng có sự thay đổi, vui lòng thử lại.'];
+                    $paymentModel->setPointsApplied($orderId, null);
+                    header("Location: /cnpm-final/PaymentController/customerChoosePaymentPage/" . $orderId);
+                    exit;
+                }
                 
+
+                if ($promotionId && !$promotionCheck) {
+                    $_SESSION['message'] = ['type' => 'danger', 'text' => 'Mã khuyến mãi bạn đã sử dụng có lẽ không còn hiệu lực, vui lòng thử lại.'];
+                    $paymentModel->setPromotion($orderId, null);
+                    header("Location: /cnpm-final/PaymentController/customerChoosePaymentPage/" . $orderId);
+                    exit;
+                }
 
                 $paymentModel->setMethod($orderId, $method);
                 $paymentModel->setTotalAmount($orderId, $totalAmount);
                 $paymentModel->setPointsBonus($orderId, $pointsBonus);
                 $paymentModel->completePayment($orderId);
-
-                $customer = $customerModel->getCustomerByOrderId($orderId);
-
                 $customerModel->updateCustomerPoints($customer['customerId'], $pointsLefts + $pointsBonus);
 
                 $orderModel->confirmOrder($orderId, 'paid');

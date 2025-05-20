@@ -82,7 +82,7 @@ CREATE TABLE OrderIncludeItem (
 -- Promotion
 CREATE TABLE Promotion (
     promotionId INT AUTO_INCREMENT PRIMARY KEY,
-    discountCode VARCHAR(50),
+    discountCode VARCHAR(50) UNIQUE,
     discountRate INT,
     startDate DATE,
     endDate DATE,
@@ -98,15 +98,9 @@ CREATE TABLE Payment (
     pointsApplied INT,
     pointsBonus INT,
     orderId INT UNIQUE,
-    promotionId INT,
-    FOREIGN KEY (orderId) REFERENCES `Order`(orderId),
-    FOREIGN KEY (promotionId) REFERENCES Promotion(promotionId)
+    discountCode INT,
+    FOREIGN KEY (orderId) REFERENCES `Order`(orderId)
 );
-
-
-
-
-
 
 INSERT INTO Account (username, password, role) VALUES
 ('staff', '1', 'staff'),

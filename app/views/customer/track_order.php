@@ -16,6 +16,13 @@
         <div class="alert alert-success"><?php echo $data['success']; ?></div>
     <?php endif; ?>
 
+    <?php if (!empty($_SESSION['message'])): ?>
+        <div class="alert alert-<?= $_SESSION['message']['type'] ?>" role="alert">
+            <?= htmlspecialchars($_SESSION['message']['text']) ?>
+        </div>
+        <?php unset($_SESSION['message']); ?>
+    <?php endif; ?>
+
     <div class="row row-cols-1 row-cols-md-3 g-4">
         <?php foreach ($data['orders'] as $order): ?>
             <?php
