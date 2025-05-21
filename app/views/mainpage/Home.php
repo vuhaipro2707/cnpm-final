@@ -2,6 +2,7 @@
 $role = $_SESSION['role'] ?? 'guest';
 ?>
 
+<?php if($role == 'guest' || $role == 'customer') {?>
 <!-- Carousel -->
 <div class="container-fluid px-5">
 <div id="mainCarousel" class="carousel slide mb-4 mt-3" data-bs-ride="carousel">
@@ -83,7 +84,128 @@ if ($role == 'guest') {
 
     </div>
 </div>
+<?php } elseif ($role == 'staff' || $role == 'manager') {?>
 
+
+<div class="container mt-4">
+  <div class="row g-4">
+    <!-- Card lớn 1: Đơn hàng -->
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header fw-bold text-primary">📦 Đơn hàng</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <?php if ($role === 'staff' || $role === 'manager'): ?>
+              <div class="col-6">
+                <div class="card h-100 text-center">
+                  <a href="/cnpm-final/OrderController/orderConfirmPage" class="text-decoration-none text-dark">
+                    <img src="/cnpm-final/public/images/icons/confirm_order_button.webp" class="card-img-top mx-auto" style="width: auto; height: 100px" alt="Xác nhận đơn">
+                    <div class="card-body p-2">
+                      <p class="card-text">Xác nhận đơn</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            <?php endif; ?>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card lớn 2: Menu / Bàn -->
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header fw-bold text-success">🍽️ Menu / Bàn</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <?php if ($role === 'staff' || $role === 'manager'): ?>
+              <div class="col-6">
+                <div class="card h-100 text-center">
+                  <a href="/cnpm-final/TableController/manageTableLayout" class="text-decoration-none text-dark">
+                    <img src="/cnpm-final/public/images/icons/table.jpg" class="card-img-top mx-auto" style="width: auto; height: 100px" alt="Quản lý bàn">
+                    <div class="card-body p-2">
+                      <p class="card-text">Quản lý bàn</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            <?php endif; ?>
+            <?php if ($role === 'manager'): ?>
+              <div class="col-6">
+                <div class="card h-100 text-center">
+                  <a href="/cnpm-final/InventoryController/displayAllItem" class="text-decoration-none text-dark">
+                    <img src="/cnpm-final/public/images/icons/manage_menu.jpg" class="card-img-top mx-auto" style="width: auto; height: 100px" alt="Quản lý menu">
+                    <div class="card-body p-2">
+                      <p class="card-text">Quản lý menu</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            <?php endif; ?>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card lớn 3: Khách hàng -->
+    <?php if ($role === 'staff' || $role === 'manager'): ?>
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-header fw-bold text-warning">👥 Khách hàng</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="card h-100 text-center">
+                  <a href="/cnpm-final/CustomerController/staffCustomerManagePage" class="text-decoration-none text-dark">
+                    <img src="/cnpm-final/public/images/icons/customer_manage.jpg" class="card-img-top mx-auto" style="width: auto; height: 100px" alt="Quản lý khách hàng">
+                    <div class="card-body p-2">
+                      <p class="card-text">Quản lý khách hàng</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <?php endif; ?>
+
+    <!-- Card lớn 4: Quản lý khác -->
+    <?php if ($role === 'manager'): ?>
+      <div class="col-md-6">
+        <div class="card h-100">
+          <div class="card-header fw-bold text-danger">🧑‍💼 Quản lý khác</div>
+          <div class="card-body">
+            <div class="row g-3">
+              <div class="col-6">
+                <div class="card h-100 text-center">
+                  <a href="/cnpm-final/StaffController/managerStaffManagePage" class="text-decoration-none text-dark">
+                    <img src="/cnpm-final/public/images/icons/staff_manage.avif" class="card-img-top mx-auto" style="width: auto; height: 100px" alt="Nhân viên">
+                    <div class="card-body p-2">
+                      <p class="card-text">Quản lý nhân viên</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="card h-100 text-center">
+                  <a href="/cnpm-final/PromotionController/managePromotionPage" class="text-decoration-none text-dark">
+                    <img src="/cnpm-final/public/images/icons/promotion_manage.jpg" class="card-img-top mx-auto" style="width: auto; height: 100px" alt="Khuyến mãi">
+                    <div class="card-body p-2">
+                      <p class="card-text">Quản lý khuyến mãi</p>
+                    </div>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    <?php endif; ?>
+  </div>
+</div>
+
+<?php } ?>
 
 
 
