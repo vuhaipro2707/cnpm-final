@@ -1,14 +1,21 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Quản lý nhân viên</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+
 <div class="container mt-5">
     <h2 class="mb-4">👥 Danh sách nhân viên</h2>
-    <a href="/cnpm-final/HomeController/staffRegisterPage" class="btn btn-primary mb-3">+ Tạo tài khoản nhân viên</a>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <a href="/cnpm-final/HomeController/staffRegisterPage" class="btn btn-primary">
+            + Tạo tài khoản nhân viên
+        </a>
+
+        <!-- 🔍 Nhóm tìm kiếm nhỏ bên phải -->
+        <form class="d-flex" id="searchForm" onsubmit="return false;">
+            <input type="text" id="searchInput" class="form-control form-control-sm me-2" placeholder="Tìm theo tên..." style="width: 200px;">
+            <button class="btn btn-sm btn-outline-secondary" id="searchButton" type="button">
+                🔍
+            </button>
+        </form>
+    </div>
+
+
 
     <?php
     if (isset($_SESSION['success'])) {
@@ -29,7 +36,7 @@
                     ? '/cnpm-final/public/images/avatar/default.jpg' 
                     : '/cnpm-final/public/images/avatar/' . $staff['avatar'];
             ?>
-            <div class="list-group-item list-group-item-action d-flex align-items-center justify-content-between shadow-sm p-3 mb-2 bg-body rounded">
+            <div class="list-group-item list-group-item-action d-flex align-items-center justify-content-between shadow-sm p-3 mb-2 bg-body rounded staff-item">
                 <div class="d-flex align-items-center">
                     <img src="<?= $imgSrc ?>" class="rounded-circle me-3 border" width="60" height="60" alt="avatar">
                     <div>
@@ -74,7 +81,7 @@
     <form method="POST" action="/cnpm-final/StaffController/updateStaff">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">📝 Chỉnh sửa nhân viên</h5>
+                <h5 class="modal-title">📝 Chỉnh sửa thông tin nhân viên</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
@@ -135,7 +142,31 @@
         value = value.replace(/\D/g, '');
         input.value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
     }
-</script>
 
-</body>
-</html>
+    // thanh tìm kiếm
+    const staffItems = document.querySelectorAll('.staff-item');
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+
+    function filterStaff() {
+        const keyword = searchInput.value.trim().toLowerCase();
+
+        staffItems.forEach(item => {
+            const name = item.querySelector('h5').textContent.toLowerCase();
+
+            if (name.includes(keyword)) {
+                item.classList.remove('d-none');
+            } else {
+                item.classList.add('d-none');
+            }
+        });
+    }
+
+    searchButton.addEventListener('click', filterStaff);
+    searchInput.addEventListener('keyup', e => {
+        if (e.key === 'Enter') {
+            filterStaff();
+        }
+    });
+
+</script>

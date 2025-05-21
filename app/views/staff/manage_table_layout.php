@@ -9,7 +9,7 @@ foreach ($data['table'] as $table) {
     <div>
         <h3 class="mb-3">🧭 Quản lý sơ đồ bàn</h3>
 
-        <form id="layoutForm" method="POST" action="/cnpm-final/TableController/updateLayout">
+        <form id="layoutForm" method="POST" action="">
             <input type="hidden" name="layoutData" id="layoutData">
             <button type="button" class="btn btn-warning mb-3" id="toggleEdit">🔧 Chế độ chỉnh sửa</button>
             <button type="submit" class="btn btn-success mb-3" id="saveBtn" style="display: none;">💾 Cập nhật Layout</button>
@@ -41,6 +41,7 @@ foreach ($data['table'] as $table) {
     </div>
 
     <!-- Ghi chú trạng thái -->
+    
     <div style="min-width: 160px;">
         <h5>📝 Ghi chú trạng thái bàn</h5>
         <div class="d-flex align-items-center mb-2">

@@ -30,7 +30,7 @@
                     case 'paid':
                         $cardClass = 'border-primary';
                         $headerClass = 'bg-primary text-white';
-                        $bgCard = 'background-color: #e7f1ff;';
+                        $bgCard = 'background-color:rgb(245, 245, 245);';
                         $statusText = 'Đã thanh toán';
                         break;
                     default:

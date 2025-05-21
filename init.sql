@@ -98,7 +98,7 @@ CREATE TABLE Payment (
     pointsApplied INT,
     pointsBonus INT,
     orderId INT UNIQUE,
-    discountCode INT,
+    promotionId INT,
     FOREIGN KEY (orderId) REFERENCES `Order`(orderId)
 );
 

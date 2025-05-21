@@ -12,8 +12,16 @@
         <!-- Danh sách món ăn -->
         <div class="col-md-7">
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-primary text-white">
-                    📋 Danh sách món ăn hiện tại
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <span>📋 Danh sách món ăn hiện tại</span>
+
+                    <!-- 🔍 Thanh tìm kiếm -->
+                    <form class="d-flex" id="foodSearchForm" onsubmit="return false;">
+                        <input type="text" id="foodSearchInput" class="form-control form-control-sm me-2" placeholder="Tìm theo tên..." style="width: 200px;">
+                        <button class="btn btn-sm btn-light" id="foodSearchButton" type="button">
+                            🔍
+                        </button>
+                    </form>
                 </div>
                 <div class="card-body p-0">
                     <table class="table table-hover mb-0">
@@ -31,7 +39,7 @@
                         </thead>
                         <tbody>
                         <?php foreach ($data as $item): ?>
-                            <tr>
+                            <tr class="menu-item-row">
                                 <td><?= $item['itemId']; ?></td>
                                 <td>
                                     <?php
@@ -142,4 +150,29 @@
     </div>
 </div>
 
+<script>
+    const foodRows = document.querySelectorAll('.menu-item-row');
+    const foodSearchInput = document.getElementById('foodSearchInput');
+    const foodSearchButton = document.getElementById('foodSearchButton');
+
+    function filterMenu() {
+        const keyword = foodSearchInput.value.trim().toLowerCase();
+
+        foodRows.forEach(row => {
+            const nameCell = row.querySelector('td:nth-child(3)');
+            const nameText = nameCell.textContent.toLowerCase();
+
+            if (nameText.includes(keyword)) {
+                row.classList.remove('d-none');
+            } else {
+                row.classList.add('d-none');
+            }
+        });
+    }
+
+    foodSearchButton.addEventListener('click', filterMenu);
+    foodSearchInput.addEventListener('keyup', e => {
+        if (e.key === 'Enter') filterMenu();
+    });
+</script>
 

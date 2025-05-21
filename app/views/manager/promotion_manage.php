@@ -24,6 +24,13 @@
                     <span class="badge bg-light text-dark">
                         <?= $activeCount ?> mã đang hoạt động
                     </span>
+                    <!-- 🔍 Tìm kiếm mã khuyến mãi -->
+                    <form class="d-flex" id="promoSearchForm" onsubmit="return false;">
+                        <input type="text" id="promoSearchInput" class="form-control form-control-sm me-2" placeholder="Tìm theo mã..." style="width: 200px;">
+                        <button class="btn btn-sm btn-light" id="promoSearchButton" type="button">
+                            🔍
+                        </button>
+                    </form>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive">
@@ -41,7 +48,7 @@
                             <tbody>
                             <?php if (!empty($data['promotion'])): ?>
                                 <?php foreach ($data['promotion'] as $promo): ?>
-                                    <tr>
+                                    <tr class="promo-row">
                                         <td><strong>#<?= $promo['promotionId'] ?></strong></td>
                                         <td class="text-uppercase"><?= htmlspecialchars($promo['discountCode']) ?></td>
                                         <td><span class="badge bg-info"><?= $promo['discountRate'] ?>%</span></td>
@@ -154,3 +161,29 @@
         </div>
     </div>
 </div>
+
+<script>
+    const promoRows = document.querySelectorAll('.promo-row');
+    const promoSearchInput = document.getElementById('promoSearchInput');
+    const promoSearchButton = document.getElementById('promoSearchButton');
+
+    function filterPromos() {
+        const keyword = promoSearchInput.value.trim().toLowerCase();
+
+        promoRows.forEach(row => {
+            const codeCell = row.querySelector('td:nth-child(2)');
+            const codeText = codeCell.textContent.toLowerCase();
+
+            if (codeText.includes(keyword)) {
+                row.classList.remove('d-none');
+            } else {
+                row.classList.add('d-none');
+            }
+        });
+    }
+
+    promoSearchButton.addEventListener('click', filterPromos);
+    promoSearchInput.addEventListener('keyup', e => {
+        if (e.key === 'Enter') filterPromos();
+    });
+</script>

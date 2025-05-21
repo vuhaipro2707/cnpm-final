@@ -1,7 +1,9 @@
 <?php
     class HomeController extends Controller {
         public function index() {
-            $this->view('mainpage/Home');
+            $itemModel = $this->model('Item');
+            $randomItem = $itemModel->getRandomItem(15);
+            $this->view('mainpage/Home', ['item'=>$randomItem]);
         }
 
         public function loginPage() {

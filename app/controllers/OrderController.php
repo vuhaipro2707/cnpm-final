@@ -125,8 +125,7 @@
                         $pos = $tableModel->getTableByTableNumber($tableNumber)['layoutPosition'];
                         $tableModel->updateStatusByPosition($pos, 'empty');
                     }
-                }
-
+                }       
                 header('Location: /cnpm-final/OrderController/orderConfirmPage');
                 exit;
             }
