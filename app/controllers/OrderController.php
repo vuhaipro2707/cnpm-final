@@ -76,12 +76,14 @@
         public function confirmOrder() {
             if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $orderId = $_POST['orderId'];
+                $staffUsername = $_POST['username'];
                 $status = $_POST['status'];
                 
 
                 $orderModel = $this->model('Order');
                 $inventoryModel = $this->model('Inventory');
                 $tableModel = $this->model('Table');
+                $staffModel = $this->model('Staff');
 
                 // Nếu trạng thái là success thì kiểm tra và trừ kho
                 if ($status === 'success') {
@@ -114,6 +116,9 @@
                 }
                 
                 // Cập nhật trạng thái đơn
+                $staffId = $staffModel->getStaffByUserName($staffUsername)['staffId'];
+
+                $orderModel->updateStaffId($orderId, $staffId);
                 $orderModel->confirmOrder($orderId, $status);
 
                 if ($status === 'failed') {

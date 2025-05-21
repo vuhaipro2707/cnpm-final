@@ -12,6 +12,12 @@
             return $this->db->single();
         }
 
+        public function getStaffAndAdminAccount() {
+            $this->db->query("SELECT username, role FROM account WHERE role IN ('admin', 'staff')");
+            return $this->db->resultSet();
+        }
+
+
         public function createAccount($username, $password, $role, $avatar) {
             $this->db->query("INSERT INTO Account (username, password, role, avatar) 
                             VALUES (:username, :password, :role, :avatar)");

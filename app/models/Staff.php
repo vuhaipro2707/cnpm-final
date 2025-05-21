@@ -93,6 +93,23 @@
             $this->db->execute();
         }
 
+        public function getbestStaff() { 
+            $this->db->query("SELECT 
+                                        s.staffId, s.name,
+                                        COUNT(o.orderId) AS totalOrders
+                                    FROM 
+                                        staff s
+                                    LEFT JOIN 
+                                        `order` o ON s.staffId = o.staffId
+                                    GROUP BY 
+                                        s.staffId, s.name
+                                    ORDER BY 
+                                        totalOrders DESC
+                                    LIMIT 1;
+                                    ");
+            return $this->db->single();
+        }
+
     }
 
 ?>

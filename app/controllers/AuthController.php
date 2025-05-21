@@ -214,6 +214,60 @@
             }
         }
 
+        public function processRoles()
+{
+    session_start(); // đảm bảo session đã được khởi tạo
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (!empty($_POST['accounts']) && is_array($_POST['accounts'])) {
+            $accounts = $_POST['accounts'];
+
+            $staffModel = $this->model('Staff');
+            $accountModel = $this->model('Account');
+
+            $updatedCount = 0;
+
+            foreach ($accounts as $account) {
+                $username = trim($account['username'] ?? '');
+                $role = trim($account['role'] ?? '');
+
+                if ($username !== '' && in_array($role, ['manager', 'staff'])) {
+                    $accountModel->updateRole($username, $role);
+
+                    $staff = $staffModel->getStaffByUserName($username);
+                    if ($staff) {
+                        $isManager = ($role === 'manager') ? 1 : 0;
+                        $staffModel->updateStaffIsManager($staff->staffId, $isManager);
+                    }
+
+                    $updatedCount++;
+                }
+            }
+
+            $_SESSION['message'] = [
+                'type' => 'success',
+                'text' => "Cập nhật thành công {$updatedCount} tài khoản!"
+            ];
+
+            header("Location: /cnpm-final/HomeController/index");
+            exit;
+        } else {
+            $_SESSION['message'] = [
+                'type' => 'danger',
+                'text' => 'Dữ liệu gửi lên không hợp lệ!'
+            ];
+            header("Location: /cnpm-final/HomeController/index");
+            exit;
+        }
+    } else {
+        $_SESSION['message'] = [
+            'type' => 'danger',
+            'text' => 'Phương thức yêu cầu không hợp lệ!'
+        ];
+        header("Location: /cnpm-final/HomeController/index");
+        exit;
+    }
+}
 
     }
 ?>

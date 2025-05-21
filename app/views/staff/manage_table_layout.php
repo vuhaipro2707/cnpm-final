@@ -42,21 +42,24 @@ foreach ($data['table'] as $table) {
 
     <!-- Ghi chú trạng thái -->
     
-    <div style="min-width: 160px;">
-        <h5>📝 Ghi chú trạng thái bàn</h5>
-        <div class="d-flex align-items-center mb-2">
-            <div class="legend-box btn-empty me-2"></div>
-            <div>Trống (empty)</div>
-        </div>
-        <div class="d-flex align-items-center mb-2">
-            <div class="legend-box btn-serving me-2"></div>
-            <div>Đang phục vụ (serving)</div>
-        </div>
-        <div class="d-flex align-items-center mb-2">
-            <div class="legend-box btn-outline-secondary me-2"></div>
-            <div>Không phải bàn</div>
+    <div class="card" style="min-width: 160px; height: 160px;">
+        <div class="card-body">
+            <h5 class="card-title">📝 Ghi chú trạng thái bàn</h5>
+            <div class="d-flex align-items-center mb-2">
+                <div class="legend-box btn-empty me-2"></div>
+                <div>Trống (empty)</div>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+                <div class="legend-box btn-serving me-2"></div>
+                <div>Đang phục vụ (serving)</div>
+            </div>
+            <div class="d-flex align-items-center mb-2">
+                <div class="legend-box btn-outline-secondary me-2"></div>
+                <div>Không phải bàn</div>
+            </div>
         </div>
     </div>
+
 </div>
 
 <style>

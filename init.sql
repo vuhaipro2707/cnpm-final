@@ -4,21 +4,21 @@ USE coffee_shop;
 
 -- Account
 CREATE TABLE Account (
-    username VARCHAR(50) PRIMARY KEY,
-    password VARCHAR(100),
-    role ENUM('staff', 'manager', 'admin', 'customer'),
+    username VARCHAR(50) PRIMARY KEY NOT NULL,
+    password VARCHAR(100) NOT NULL,
+    role ENUM('staff', 'manager', 'admin', 'customer') NOT NULL,
     avatar VARCHAR(255)
 );
 
 -- Staff
 CREATE TABLE Staff (
-    staffId INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100),
-    position VARCHAR(50),
-    username VARCHAR(50),
-    isManager TINYINT(1) DEFAULT 0,
-    salary INT,
-    phone VARCHAR(20),
+    staffId INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    position VARCHAR(50) NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    isManager TINYINT(1) DEFAULT 0 NOT NULL,
+    salary INT NOT NULL,
+    phone VARCHAR(20) NOT NULL,
     FOREIGN KEY (username) REFERENCES Account(username)
 );
 
@@ -26,54 +26,55 @@ CREATE TABLE Staff (
 
 -- Customer
 CREATE TABLE Customer (
-    customerId INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100),
-    phone VARCHAR(20),
-    points INT,
-    username VARCHAR(50),
+    customerId INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    phone VARCHAR(20) NOT NULL,
+    points INT NOT NULL,
+    username VARCHAR(50) NOT NULL,
     FOREIGN KEY (username) REFERENCES Account(username)
 );
 
 -- Item
 CREATE TABLE Item (
-    itemId INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100),
-    image VARCHAR(255),
-    note TEXT,
-    price INT,
-    type VARCHAR(100)
+    itemId INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    image VARCHAR(255) NOT NULL,
+    note TEXT NOT NULL,
+    price INT NOT NULL,
+    type VARCHAR(100) NOT NULL
 );
 
 -- Inventory
 CREATE TABLE Inventory (
-    itemId INT PRIMARY KEY,
-    quantity INT,
+    itemId INT PRIMARY KEY NOT NULL,
+    quantity INT NOT NULL,
     FOREIGN KEY (itemId) REFERENCES Item(itemId)
 );
 
 CREATE TABLE TableLayout (
-    layoutPosition VARCHAR(10) PRIMARY KEY, -- ví dụ: '3_5' cho hàng 3, cột 5
-    tableNumber VARCHAR(10),
-    status ENUM('empty', 'serving', 'paid', 'inactive') DEFAULT 'empty'
+    layoutPosition VARCHAR(10) PRIMARY KEY NOT NULL, -- ví dụ: '3_5' cho hàng 3, cột 5
+    tableNumber VARCHAR(10) NOT NULL,
+    status ENUM('empty', 'serving', 'inactive') DEFAULT 'empty' NOT NULL
 );
 
 -- Order
 CREATE TABLE `Order` (
-    orderId INT AUTO_INCREMENT PRIMARY KEY,
-    status ENUM('paid', 'success', 'failed', 'pending') default 'pending',
-    date DATETIME,
-    layoutPosition VARCHAR(10),
-    tableNumber VARCHAR(10),
-    customerId INT,
+    orderId INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    status ENUM('paid', 'success', 'failed', 'pending') default 'pending' NOT NULL,
+    date DATETIME NOT NULL,
+    layoutPosition VARCHAR(10) NOT NULL,
+    tableNumber VARCHAR(10) NOT NULL,
+    customerId INT NOT NULL,
+    staffId INT,
     FOREIGN KEY (customerId) REFERENCES Customer(customerId),
     FOREIGN KEY (layoutPosition) REFERENCES TableLayout(layoutPosition)
 );
 
 -- include (Order - Item)
 CREATE TABLE OrderIncludeItem (
-    orderId INT,
-    itemId INT,
-    quantity INT,
+    orderId INT NOT NULL,
+    itemId INT NOT NULL,
+    quantity INT NOT NULL,
     PRIMARY KEY (orderId, itemId),
     FOREIGN KEY (orderId) REFERENCES `Order`(orderId),
     FOREIGN KEY (itemId) REFERENCES Item(itemId)
@@ -81,23 +82,23 @@ CREATE TABLE OrderIncludeItem (
 
 -- Promotion
 CREATE TABLE Promotion (
-    promotionId INT AUTO_INCREMENT PRIMARY KEY,
-    discountCode VARCHAR(50) UNIQUE,
-    discountRate INT,
-    startDate DATE,
-    endDate DATE,
-    active TINYINT(1)
+    promotionId INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
+    discountCode VARCHAR(50) UNIQUE NOT NULL,
+    discountRate INT NOT NULL,
+    startDate DATE NOT NULL,
+    endDate DATE NOT NULL,
+    active TINYINT(1) NOT NULL
 );
 
 -- Payment
 CREATE TABLE Payment (
-    paymentId INT AUTO_INCREMENT PRIMARY KEY,
+    paymentId INT AUTO_INCREMENT PRIMARY KEY NOT NULL,
     method ENUM('cash', 'transfer', 'momo', 'qr'),
-    status ENUM('completed', 'pending') default 'pending',
+    status ENUM('completed', 'pending') default 'pending' NOT NULL,
     totalAmount INT,
     pointsApplied INT,
     pointsBonus INT,
-    orderId INT UNIQUE,
+    orderId INT UNIQUE NOT NULL,
     promotionId INT,
     FOREIGN KEY (orderId) REFERENCES `Order`(orderId)
 );
@@ -105,7 +106,7 @@ CREATE TABLE Payment (
 INSERT INTO Account (username, password, role) VALUES
 ('staff', '1', 'staff'),
 ('manager', '1', 'manager'),
-('admin99', '1', 'admin'),
+('admin', '1', 'admin'),
 ('lucystaff', '1', 'staff'),
 ('bobmanager', '1', 'manager'),
 ('customer', '1', 'customer'),
@@ -114,10 +115,10 @@ INSERT INTO Account (username, password, role) VALUES
 ('customerdiana', '1', 'customer');
 
 INSERT INTO Staff (name, position, username, isManager, salary, phone) VALUES
-('John Doe', 'Barista', 'staff', 0, 3000, '0123456789'),
-('Lucy Smith', 'Waiter', 'lucystaff', 0, 2800, '0987654321'),
-('Bob Manager', 'Cashier', 'bobmanager', 1, 4000, '0111222333'),
-('Anna Waiter', 'Waiter', 'manager', 1, 3500, '0222333444');
+('John Doe', 'Barista', 'staff', 0, 3000000, '0123456789'),
+('Lucy Smith', 'Waiter', 'lucystaff', 0, 2800000, '0987654321'),
+('Bob Manager', 'Cashier', 'bobmanager', 1, 4000000, '0111222333'),
+('Anna Waiter', 'Waiter', 'manager', 1, 3500000, '0222333444');
 
 
 INSERT INTO Customer (name, phone, points, username) VALUES

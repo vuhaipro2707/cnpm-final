@@ -56,7 +56,7 @@
                 <?php unset($_SESSION['error']); ?>
             <?php endif; ?>
 
-            <button type="submit" class="btn btn-success w-100">Tạo tài khoản</button>
+            <button type="submit" class="btn btn-primary w-100">Tạo tài khoản</button>
             <a href="/cnpm-final/StaffController/managerStaffManagePage" class="btn btn-secondary w-100 mt-2">Quay lại</a>
         </form>
     </div>

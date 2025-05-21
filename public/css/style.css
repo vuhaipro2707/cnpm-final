@@ -1,15 +1,108 @@
-.btn {
-    display: inline-block;
-    padding: 8px 16px;
-    background-color: #007BFF;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-}
-.btn:hover {
-    background-color: #0056b3;
-}
-
 .dropdown-menu .dropdown-item {
   text-align: center;
+}
+
+body {
+/* background-color:rgb(227,208,193); Màu nền (có thể đổi thành màu bạn muốn) */
+/* Hoặc nếu muốn dùng hình nền thì dùng: */
+background-image: url('/cnpm-final/public/images/other/background.png');
+background-size: auto;
+background-repeat: repeat;
+background-position: 0 0;
+}
+
+/* Đổi màu nền và viền của btn-primary thành màu nâu */
+.btn-primary {
+    background-color: #6f4f28 !important;
+    border-color: #6f4f28 !important;
+    color: #fff !important;
+}
+
+/* Đổi màu chữ của các phần tử có class text-primary thành màu nâu */
+.text-primary {
+    color: #6f4f28 !important;
+}
+
+/* Đổi màu nền của các phần tử có class bg-primary thành màu nâu */
+.bg-primary {
+    background-color: #6f4f28 !important;
+    color: #fff !important;
+}
+
+/* Đổi màu viền của các phần tử có class border-primary thành màu nâu */
+.border-primary {
+    border-color: #6f4f28 !important;
+}
+
+/* Đổi màu cho các phần tử có class text-decoration-primary */
+.text-decoration-primary {
+    text-decoration-color: #6f4f28 !important;
+}
+
+/* Đổi màu cho các phần tử có class shadow-primary */
+.shadow-primary {
+    box-shadow: 0 4px 6px rgba(111, 79, 40, 0.2) !important;
+}
+
+/* Đổi màu cho các phần tử có class list-group-item-primary */
+.list-group-item-primary {
+    background-color: #6f4f28 !important;
+    color: #fff !important;
+}
+
+/* Hover cho btn-primary */
+.btn-primary:hover {
+    background-color: #5c3e1a !important;
+    border-color: #5c3e1a !important;
+}
+
+/* Hover cho text-primary */
+.text-primary:hover {
+    color: #5c3e1a !important;
+}
+
+/* Hover cho bg-primary */
+.bg-primary:hover {
+    background-color: #5c3e1a !important;
+    color: #fff !important;
+}
+
+/* Hover cho border-primary */
+.border-primary:hover {
+    border-color: #5c3e1a !important;
+}
+
+/* Focus cho btn-primary */
+.btn-primary:focus {
+    box-shadow: 0 0 0 0.2rem rgba(111, 79, 40, 0.5) !important;
+}
+
+/* btn-outline-primary màu nâu */
+.btn-outline-primary {
+    color: #6f4f28 !important;
+    border-color: #6f4f28 !important;
+}
+
+/* Hover btn-outline-primary */
+.btn-outline-primary:hover {
+    background-color: #6f4f28 !important;
+    color: #fff !important;
+    border-color: #6f4f28 !important;
+}
+
+/* Radio button mặc định */
+.form-check-input {
+    appearance: none !important;
+    border: 2px solid #8B4513 !important;
+}
+
+/* Khi radio được chọn */
+.form-check-input:checked {
+    background-color: #8B4513 !important;
+    border-color: #8B4513 !important;
+}
+
+/* Hover radio */
+.form-check-input:hover {
+    border-color: #6a3b2f !important;
 }

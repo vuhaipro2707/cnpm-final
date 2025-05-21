@@ -131,12 +131,33 @@
             return $this->mergeOrderbyOrderId($rows);
         }
 
-
         public function confirmOrder($orderId, $status) {
             $this->db->query('UPDATE `order` SET status = :status WHERE orderId = :orderId');
             $this->db->bind(':orderId', $orderId);
             $this->db->bind(':status', $status);
             $this->db->execute();
         }
+
+        public function updateStaffId($orderId, $staffId) {
+            $this->db->query('UPDATE `order` SET staffId = :staffId WHERE orderId = :orderId');
+            $this->db->bind(':orderId', $orderId);
+            $this->db->bind(':staffId', $staffId);
+            return $this->db->execute();
+        }
+
+        public function countTotalOrderByStatus() {
+            $this->db->query("SELECT 
+                                        status,
+                                        COUNT(*) AS totalOrders
+                                    FROM 
+                                        `order`
+                                    WHERE 
+                                        status IN ('pending', 'success', 'failed', 'paid')
+                                    GROUP BY 
+                                        status;
+                                    ");
+            return $this->db->resultSet();
+        }
+
     }
 ?>

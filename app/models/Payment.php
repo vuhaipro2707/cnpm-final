@@ -53,5 +53,14 @@ class Payment extends Database {
         $this->bind(':orderId', $orderId);
         $this->execute();
     }
+
+    public function getTotalRevenueToday() {
+        $this->query("SELECT SUM(p.totalAmount) AS total_payment_today
+                            FROM payment p
+                            JOIN `order` o ON p.orderId = o.orderId
+                            WHERE DATE(o.date) = CURDATE();
+                            ");
+        return $this->single();
+    }
 }
 ?>

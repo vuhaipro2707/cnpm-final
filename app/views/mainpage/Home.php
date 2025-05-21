@@ -84,10 +84,99 @@ if ($role == 'guest') {
 
     </div>
 </div>
+
+
 <?php } elseif ($role == 'staff' || $role == 'manager') {?>
+<?php } if ($role == 'manager') {?>
+<?php
+$order = $data['ordersByStatus'];
+$data['totalOrders'] = 
+    ($order['pending'] ?? 0) + 
+    ($order['success'] ?? 0) + 
+    ($order['failed'] ?? 0) + 
+    ($order['paid'] ?? 0);
+?>
 
+  <div class="container mt-5">
+    <h2 class="mb-4">Thống kê tổng quan</h2>
 
-<div class="container mt-4">
+    <div class="row g-4">
+        <!-- Best Selling Item -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body">
+                    <h5 class="card-title">📊 Top 3 món bán chạy</h5>
+                    <canvas id="topItemsChart" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        
+
+        <!-- Tổng số đơn hàng -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100 bg-light-subtle">
+                <div class="card-body">
+                    <h5 class="card-title">🧾 Tổng số đơn hàng</h5>
+                    <p class="card-text fs-4 fw-bold"><?= $data['totalOrders'] ?? 0 ?> đơn</p>
+
+                    <ul class="list-group list-group-flush mt-3">
+                        <li class="list-group-item">
+                            <strong>Pending:</strong> <?= $data['ordersByStatus']['pending'] ?? 0 ?> đơn 
+                            <small class="text-muted">(Đang đợi món)</small>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Success:</strong> <?= $data['ordersByStatus']['success'] ?? 0 ?> đơn 
+                            <small class="text-muted">(Đã hoàn thành món, chưa tính tiền)</small>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Fail:</strong> <?= $data['ordersByStatus']['failed'] ?? 0 ?> đơn 
+                            <small class="text-muted">(Bị từ chối)</small>
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Paid:</strong> <?= $data['ordersByStatus']['paid'] ?? 0 ?> đơn 
+                            <small class="text-muted">(Đã thanh toán)</small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+        </div>
+
+        
+
+        <!-- Staff Performance -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100">
+                <div class="card-body">
+                    <h5 class="card-title">👨‍💼 Nhân viên xuất sắc</h5>
+                    <p class="card-text fs-5 fw-bold"><?php echo isset($data['bestStaff']['totalOrders']) && $data['bestStaff']['totalOrders'] > 0
+                                                          ? $data['bestStaff']['name']
+                                                          : 'Không có dữ liệu';?></p>
+                    <p class="text-muted mb-0">Số đơn xử lý: <?= $data['bestStaff']['totalOrders'] ?? 0 ?></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today’s Revenue -->
+        <div class="col-md-6 col-lg-4">
+            <div class="card shadow-sm border-0 rounded-4 h-100 bg-light">
+                <div class="card-body">
+                    <h5 class="card-title">💰 Doanh thu hôm nay</h5>
+                    <p class="card-text fs-4 fw-bold text-success"><?= number_format($data['totalRevenueToday']['total_payment_today'] ?? 0, 0, ',', '.') ?> VND</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-4">
+        </div>
+
+    </div>
+</div>
+
+<div class="container mt-4 mb-4">
   <div class="row g-4">
     <!-- Card lớn 1: Đơn hàng -->
     <div class="col-md-6">
@@ -205,19 +294,128 @@ if ($role == 'guest') {
   </div>
 </div>
 
+<?php } else if ($role == 'admin') {?>
+
+<?php
+
+$data['feedback'] = [
+  ['errorId' => 101, 'errorName' => 'Lỗi đăng nhập', 'errorPlace' => 'Trang Login', 'note' => 'Không thể đăng nhập bằng Google', 'date' => '2025-05-20'],
+  ['errorId' => 102, 'errorName' => 'Lỗi hiển thị', 'errorPlace' => 'Trang Dashboard', 'note' => 'Giao diện bị lệch trên Chrome', 'date' => '2025-05-19'],
+  ['errorId' => 103, 'errorName' => 'Lỗi tải dữ liệu', 'errorPlace' => 'API /users', 'note' => 'Timeout khi gọi API', 'date' => '2025-05-18'],
+];
+?>
+
+<div class="container my-5">
+  <div class="row gy-4">
+    
+    <!-- Cột trái: chỉnh role -->
+    <div class="col-md-6">
+      <h2 class="mb-4 text-center">Chỉnh sửa Role cho tài khoản</h2>
+      <?php 
+    if (!empty($_SESSION['message'])): ?>
+        <div class="alert alert-<?= $_SESSION['message']['type'] ?>" role="alert">
+            <?= htmlspecialchars($_SESSION['message']['text']) ?>
+        </div>
+        <?php unset($_SESSION['message']); ?>
+    <?php endif; ?>
+
+      <form method="post" action="/cnpm-final/AuthController/processRoles" class="p-4 bg-white rounded shadow-sm">
+        <table class="table table-bordered rounded">
+          <thead class="table-light">
+            <tr>
+              <th>Username</th>
+              <th>Role</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($data['accounts'] as $index => $account): ?>
+              <tr>
+                <td>
+                  <input type="hidden" name="accounts[<?= $index ?>][username]" value="<?= htmlspecialchars($account['username']) ?>" />
+                  <?= htmlspecialchars($account['username']) ?>
+                </td>
+                <td>
+                  <select class="form-select rounded" name="accounts[<?= $index ?>][role]" required>
+                    <option value="manager" <?= $account['role'] === 'manager' ? 'selected' : '' ?>>Manager</option>
+                    <option value="staff" <?= $account['role'] === 'staff' ? 'selected' : '' ?>>Staff</option>
+                  </select>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+
+        <button type="submit" class="btn btn-primary w-100">Lưu thay đổi</button>
+      </form>
+    </div>
+
+    <!-- Cột phải: danh sách feedback lỗi -->
+    <div class="col-md-6">
+      <h2 class="mb-4 text-center">Danh sách Feedback lỗi</h2>
+      
+      <table class="table table-bordered table-hover rounded shadow-sm bg-white">
+        <thead class="table-light">
+          <tr>
+            <th>Error ID</th>
+            <th>Error Name</th>
+            <th>Location</th>
+            <th>Note</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php if (!empty($data['feedback'])): ?>
+            <?php foreach ($data['feedback'] as $fb): ?>
+              <tr>
+                <td><?= htmlspecialchars($fb['errorId']) ?></td>
+                <td><?= htmlspecialchars($fb['errorName']) ?></td>
+                <td><?= htmlspecialchars($fb['errorPlace']) ?></td>
+                <td><?= htmlspecialchars($fb['note']) ?></td>
+                <td><?= htmlspecialchars($fb['date']) ?></td>
+              </tr>
+            <?php endforeach; ?>
+          <?php else: ?>
+            <tr><td colspan="5" class="text-center">Không có feedback lỗi nào</td></tr>
+          <?php endif; ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
 <?php } ?>
 
 
 
 <script>
-  const container = document.getElementById('cardContainer');
-  const scrollAmount = 220 + 16; // width of one card + gap
-
-  document.getElementById('scrollLeft').addEventListener('click', () => {
-    container.scrollBy({ left: -scrollAmount * 5, behavior: 'smooth' });
-  });
-
-  document.getElementById('scrollRight').addEventListener('click', () => {
-    container.scrollBy({ left: scrollAmount * 5, behavior: 'smooth' });
+  const itemNames = <?= json_encode(array_column($data['bestItemSale'], 'name')) ?>;
+  const quantities = <?= json_encode(array_column($data['bestItemSale'], 'total_quantity')) ?>;
+  console.log('haha');
+  const ctx = document.getElementById('topItemsChart').getContext('2d');
+  new Chart(ctx, {
+      type: 'bar',
+      data: {
+          labels: itemNames,
+          datasets: [{
+              label: 'Số lượng đã bán',
+              data: quantities,
+              backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+              borderRadius: 10,
+          }]
+      },
+      options: {
+          responsive: true,
+          scales: {
+              y: {
+                  beginAtZero: true,
+                  ticks: {
+                      precision: 0
+                  }
+              }
+          },
+          plugins: {
+              legend: { display: false }
+          }
+      }
   });
 </script>

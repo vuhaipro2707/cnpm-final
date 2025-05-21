@@ -22,19 +22,22 @@ foreach ($data['table'] as $table) {
         <!-- Sidebar -->
         <div class="col-md-2">
             <div class="position-sticky pt-4" style="top: 2rem;">
-                <div class="text-center mb-4">
-                    <a href="/cnpm-final/OrderController/customerTrackOrderPage" class="btn btn-outline-dark w-100 mb-2">
-                        🧾 Xem tất cả order
-                    </a>
-                    <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#tableModal">
-                        Chọn bàn
-                    </button>
-                    <?php if (isset($_SESSION['readyOrder']['tableNumber'])): ?>
-                        <div class="mt-2 small text-success">
-                            Bàn: <?php echo $_SESSION['readyOrder']['tableNumber']; ?>
-                        </div> 
-                    <?php endif; ?>
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body text-center">
+                        <a href="/cnpm-final/OrderController/customerTrackOrderPage" class="btn btn-outline-dark w-100 mb-2">
+                            🧾 Xem tất cả order
+                        </a>
+                        <button type="button" class="btn btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#tableModal">
+                            Chọn bàn
+                        </button>
+                        <?php if (isset($_SESSION['readyOrder']['tableNumber'])): ?>
+                            <div class="mt-2 small text-success">
+                                Bàn: <?php echo $_SESSION['readyOrder']['tableNumber']; ?>
+                            </div> 
+                        <?php endif; ?>
+                    </div>
                 </div>
+
 
                 <!-- Danh sách loại món -->
                 <h5 class="mb-3">Loại món</h5>
@@ -70,7 +73,7 @@ foreach ($data['table'] as $table) {
                                 $defaultImage = 'https://picsum.photos/300/300';
                                 $imageLink = !empty($item['image']) ? ('/cnpm-final/public/images/productCard/' . $item['image']) : $defaultImage;
                                 ?>
-                                <img src="<?= $imageLink ?>" class="card-img-top" style="height: 200px; object-fit: cover;">
+                                <img src="<?= $imageLink ?>" class="card-img-top mx-auto d-block" style="height: 200px; object-fit: cover;">
                                 <div class="card-body d-flex flex-column">
                                     <h5 class="card-title"><?php echo $item['name']; ?></h5>
                                     <p class="card-text"><?php echo $item['note']; ?></p>
