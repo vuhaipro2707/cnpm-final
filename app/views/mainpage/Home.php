@@ -87,7 +87,6 @@ if ($role == 'guest') {
 
 
 <?php } elseif ($role == 'staff' || $role == 'manager') {?>
-<?php } if ($role == 'manager') {?>
 <?php
 $order = $data['ordersByStatus'];
 $data['totalOrders'] = 
